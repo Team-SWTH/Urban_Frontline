@@ -1,7 +1,7 @@
 // ========================================
 // File: JsonParser.cs
 // Created: 2024-12-19 19:23:29
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System.Collections.Generic;

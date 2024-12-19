@@ -1,7 +1,7 @@
 // ========================================
 // File: IniData.cs
 // Created: 2024-12-19 19:20:28
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System;
@@ -15,6 +15,9 @@ namespace UrbanFrontline.Common
     [Serializable]
     public class IniData
     {
+        /// <summary>
+        /// 데이터가 담긴 딕셔너리.
+        /// </summary>
         private Dictionary<string, Dictionary<string, string>> m_sections = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
