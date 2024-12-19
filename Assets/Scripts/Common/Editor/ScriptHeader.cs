@@ -7,10 +7,10 @@
 using System;
 using System.IO;
 
-namespace UrbanFrameworks.Common.Editor
+namespace UrbanFrontline.Common.Editor
 {
     /// <summary>
-    /// 
+    /// 스크립트 이름, 작성 날짜 등을 저장합니다.
     /// </summary>
     public readonly struct ScriptHeader
     {
