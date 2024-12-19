@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UrbanFrameworks.Common
+namespace UrbanFrontline.Common
 {
     /// <summary>
     /// 싱글턴 패턴을 구현한 정적 클래스입니다.
