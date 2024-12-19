@@ -33,10 +33,10 @@ namespace UrbanFrameworks.Common.Editor
         public override string ToString()
         {
             return $@"// ========================================
-                      // File: {fileName}
-                      // Created: {createdTime:yyyy-MM-dd HH:mm:ss}
-                      // Author: ※ 작성자 이름을 반드시 기입해주세요.
-                      // ========================================";
+// File: {fileName}
+// Created: {createdTime:yyyy-MM-dd HH:mm:ss}
+// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// ========================================";
         }
     }
 

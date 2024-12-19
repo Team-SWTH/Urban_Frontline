@@ -38,7 +38,7 @@ namespace UrbanFrameworks.Common
                 if (!m_instanceBank.ContainsKey(typeof(TInstance)) || 
                     !m_instanceBank[typeof(TInstance)])
                 {
-                    TInstance instance = GameObject.FindObjectOfType<TInstance>();
+                    TInstance instance = GameObject.FindFirstObjectByType<TInstance>();
                     if (!instance)
                     {
                         GameObject singletonObject = new($"{typeof(TInstance).Name}");
