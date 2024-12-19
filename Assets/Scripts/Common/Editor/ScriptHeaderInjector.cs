@@ -8,7 +8,7 @@ using System.IO;
 
 using UnityEditor;
 
-namespace UrbanFrameworks.Common.Editor
+namespace UrbanFrontline.Common.Editor
 {
     /// <summary>
     /// 스크립트 최상단에 정보(헤더)를 기록합니다.
