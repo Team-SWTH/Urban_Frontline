@@ -1,7 +1,7 @@
 // ========================================
 // File: JsonData.cs
 // Created: 2024-12-19 19:22:17
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System;
@@ -9,9 +9,15 @@ using System.Collections.Generic;
 
 namespace UrbanFrontline.Common
 {
+    /// <summary>
+    /// .json 파일에 저장된 데이터.
+    /// </summary>
     [Serializable]
     public class JsonData
     {
+        /// <summary>
+        /// 데이터가 담긴 딕셔너리.
+        /// </summary>
         private Dictionary<string, object> m_data = new(StringComparer.OrdinalIgnoreCase);
         
         /// <summary>
