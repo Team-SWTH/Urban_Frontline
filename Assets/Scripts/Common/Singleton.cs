@@ -29,10 +29,11 @@ namespace UrbanFrameworks.Common
                         GameObject singletonObject = new($"{typeof(TInstance).Name}_Singleton");
                         instance = singletonObject.AddComponent<TInstance>();
                     }
-
+                    
+                    GameObject.DontDestroyOnLoad(m_instanceBank[typeof(TInstance)]);
                     m_instanceBank[typeof(TInstance)] = instance;
                 }
-
+                
                 return m_instanceBank[typeof(TInstance)];
             }
         }
