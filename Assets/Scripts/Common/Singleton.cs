@@ -1,7 +1,7 @@
 // ========================================
 // File: Singleton.cs
 // Created: 2024-12-19 18:32:38
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================using UnityEngine;
 
 using System;
