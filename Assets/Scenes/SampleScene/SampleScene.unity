@@ -666,8 +666,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB2E4\uB78C\uC950 \uD5CC\n\uCCC7\uBC14\uD034\uC5D0\n\uD0C0\uACE0\uD30C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 08c8899ef01364843b608ff6f699561d, type: 2}
-  m_sharedMaterial: {fileID: -5974350283699644980, guid: 08c8899ef01364843b608ff6f699561d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e08bb7bce4342e744842fdd4635df659, type: 2}
+  m_sharedMaterial: {fileID: 7715478695590903013, guid: e08bb7bce4342e744842fdd4635df659, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
