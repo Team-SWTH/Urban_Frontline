@@ -10,7 +10,7 @@ using UnityEngine;
 
 using UniRx;
 
-using UrbanFrontline.Client.Core.Utilities;
+using UrbanFrontline.Client.Core.Input;
 
 namespace UrbanFrontline.Client.Core.Actor
 {

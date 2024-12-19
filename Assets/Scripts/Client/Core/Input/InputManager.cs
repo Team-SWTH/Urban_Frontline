@@ -12,28 +12,14 @@ using UnityEngine;
 
 using UrbanFrontline.Common;
 
-namespace UrbanFrontline.Client.Core.Utilities
+namespace UrbanFrontline.Client.Core.Input
 {
-    /// <summary>
-    /// 바인딩 할 수 있는 키 액션 집합
-    /// </summary>
-    public enum KeyAction
-    {
-        Forward,
-        Left,
-        Backward,
-        Right,
-        Jump,
-        Roll,
-    }
-
-
     public static class InputManager
     {
         /// <summary>
         /// 바인딩 할 수 있는 키의 기본 값 배열
         /// </summary>
-        private static readonly KeyCode[] m_defaultKeyBind = {
+        private static readonly KeyCode[] DefaultKeyBind = {
             KeyCode.W,
             KeyCode.A,
             KeyCode.S,
@@ -46,7 +32,7 @@ namespace UrbanFrontline.Client.Core.Utilities
         /// 키 바인딩이 저장되어있는 파일 경로
         /// 기대값 경로 : C:\Users\{사용자 명}\AppData\LocalLow\Team SWTH\Urban_Frontline\keybindings.json
         /// </summary>
-        private static readonly string m_keyBindFilePath = Path.Combine(Application.persistentDataPath, "keybindings.json");
+        private static readonly string KeyBindFilePath = Path.Combine(Application.persistentDataPath, "keybindings.json");
 
         /// <summary>
         /// 실제 바인딩 딕셔너리
@@ -65,9 +51,9 @@ namespace UrbanFrontline.Client.Core.Utilities
         /// </summary>
         private static void LoadKeyBindAll()
         {
-            if (File.Exists(m_keyBindFilePath))
+            if (File.Exists(KeyBindFilePath))
             {
-                JsonData jsonData = JsonParser.Load(m_keyBindFilePath);
+                JsonData jsonData = JsonParser.Load(KeyBindFilePath);
 
                 foreach (KeyAction action in System.Enum.GetValues(typeof(KeyAction)))
                 {
@@ -97,7 +83,7 @@ namespace UrbanFrontline.Client.Core.Utilities
                 jsonData.SetValue(binding.Key.ToString(), binding.Value.ToString());
             }
 
-            JsonParser.Save(m_keyBindFilePath, jsonData);
+            JsonParser.Save(KeyBindFilePath, jsonData);
         }
 
         /// <summary>
@@ -107,9 +93,9 @@ namespace UrbanFrontline.Client.Core.Utilities
         {
             m_keyBindDictionary.Clear();
 
-            for (int i = 0; i < m_defaultKeyBind.Length; i++)
+            for (int i = 0; i < KeyBindFilePath.Length; i++)
             {
-                m_keyBindDictionary[(KeyAction)i] = m_defaultKeyBind[i];
+                m_keyBindDictionary[(KeyAction)i] = DefaultKeyBind[i];
             }
 
             SaveKeyBindAll();
@@ -139,7 +125,7 @@ namespace UrbanFrontline.Client.Core.Utilities
         /// <returns>키가 눌려 있으면 true, 그렇지 않으면 false</returns>
         public static bool GetKey(KeyAction keyAction)
         {
-            return Input.GetKey(m_keyBindDictionary[keyAction]);
+            return UnityEngine.Input.GetKey(m_keyBindDictionary[keyAction]);
         }
 
         /// <summary>
@@ -149,7 +135,7 @@ namespace UrbanFrontline.Client.Core.Utilities
         /// <returns>키가 이번 프레임에 눌렸으면 true, 그렇지 않으면 false</returns>
         public static bool GetKeyDown(KeyAction keyAction)
         {
-            return Input.GetKeyDown(m_keyBindDictionary[keyAction]);
+            return UnityEngine.Input.GetKeyDown(m_keyBindDictionary[keyAction]);
         }
 
         /// <summary>
@@ -159,7 +145,7 @@ namespace UrbanFrontline.Client.Core.Utilities
         /// <returns>키가 이번 프레임에 떼어졌으면 true, 그렇지 않으면 false</returns>
         public static bool GetKeyUp(KeyAction keyAction)
         {
-            return Input.GetKeyUp(m_keyBindDictionary[keyAction]);
+            return UnityEngine.Input.GetKeyUp(m_keyBindDictionary[keyAction]);
         }
         #endregion
     }
