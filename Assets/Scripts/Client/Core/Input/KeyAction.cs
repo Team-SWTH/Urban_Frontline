@@ -17,6 +17,6 @@ namespace UrbanFrontline.Client.Core.Input
         Backward,
         Right,
         Jump,
-        Roll,
+        Roll
     }
 }
