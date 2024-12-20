@@ -93,7 +93,7 @@ namespace UrbanFrontline.Client.Core.Input
         {
             m_keyBindDictionary.Clear();
 
-            for (int i = 0; i < KeyBindFilePath.Length; i++)
+            for (int i = 0; i < DefaultKeyBind.Length; i++)
             {
                 m_keyBindDictionary[(KeyAction)i] = DefaultKeyBind[i];
             }
