@@ -58,14 +58,15 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         public void Walk(Vector2 direction)
         {
             Vector3 moveDir = new Vector3(direction.x, 0, direction.y).normalized;
+            Vector3 forwardMoveDir = transform.TransformDirection(moveDir.normalized);
 
             if (m_controller.CharacterController.isGrounded)
             {
-                m_controller.CharacterController.Move(m_walkSpeed * Time.deltaTime * moveDir);
+                m_controller.CharacterController.Move(m_walkSpeed * Time.deltaTime * forwardMoveDir);
             }
             else
             {
-                m_controller.CharacterController.Move(m_airSpeed * Time.deltaTime * moveDir);
+                m_controller.CharacterController.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
             }
         }
 
