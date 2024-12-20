@@ -69,20 +69,12 @@ namespace UrbanFrontline.Server.Core.Networks
         /// <returns>동일하면 true, 그렇지 않으면 false</returns>
         public bool Equals(Client? other)
         {
-            if (other is null)
-                return false;
-
-            return m_id == other.m_id;
+            return other is null ? false : m_id == other.m_id;
         }
 
         public override bool Equals(object? obj)
         {
-            if (obj is Client client)
-            {
-                return Equals(client);
-            }
-
-            return false;
+            return obj is Client client ? Equals(client) : false;
         }
 
         public override int GetHashCode()
@@ -92,10 +84,7 @@ namespace UrbanFrontline.Server.Core.Networks
 
         public static bool operator ==(Client? left, Client? right)
         {
-            if (left is null)
-                return right is null;
-
-            return left.Equals(right);
+            return left is null ? right is null : left.Equals(right);
         }
 
         public static bool operator !=(Client? left, Client? right)
