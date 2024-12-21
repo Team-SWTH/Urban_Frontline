@@ -4,7 +4,7 @@
 // Author: leeinhwan0421
 // ========================================
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Base
 {
     /// <summary>
     /// 각 상태가 구현해야 하는 공통 메서드 정의

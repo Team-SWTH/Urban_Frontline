@@ -5,6 +5,10 @@
 // ========================================
 
 using UniRx;
+
+using UnityEngine;
+
+using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
 namespace UrbanFrontline.Client.Core.Actor.State
@@ -29,7 +33,17 @@ namespace UrbanFrontline.Client.Core.Actor.State
                                    .Where(move => move.sqrMagnitude > 0f)
                                    .Subscribe(_ =>
                                    {
-                                       Player.SetState(Player.WalkState);
+                                       Player.SetMoveState(Player.WalkState);
+                                   }).AddTo(player);
+
+            inputProvider.JumpInput.Where(_ => IsEnable == true)
+                                   .Where(_ => Player.CharacterMovement.IsGrounded() == true)
+                                   .Subscribe(jump =>
+                                   {
+                                       if (jump)
+                                       {
+                                           Player.SetMoveState(Player.JumpState);
+                                       }
                                    }).AddTo(player);
         }
 
@@ -40,7 +54,8 @@ namespace UrbanFrontline.Client.Core.Actor.State
         {
             base.Enter();
 
-            Player.AnimationController.Play("Idle", 0);
+            Player.AnimatorController.Play("Idle", 0);
+            Player.AnimatorController.SetLayerWeight(1.0f, 1);
         }
 
         /// <summary>

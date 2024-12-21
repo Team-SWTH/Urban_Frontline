@@ -34,5 +34,11 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// 캐릭터 구르기 기능
         /// </summary>
         void Roll();
+
+        /// <summary>
+        /// 현재 땅인지를 체크하는 기능
+        /// </summary>
+        /// <returns>현재 땅에 닿아있다면 true, 아니라면 false</returns>
+        bool IsGrounded();
     }
 }

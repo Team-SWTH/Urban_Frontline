@@ -75,6 +75,17 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// </summary>
         public void Run(Vector2 direction)
         {
+            Vector3 moveDir = new Vector3(direction.x, 0, direction.y).normalized;
+            Vector3 forwardMoveDir = transform.TransformDirection(moveDir.normalized);
+
+            if (m_controller.CharacterController.isGrounded)
+            {
+                m_controller.CharacterController.Move(m_runSpeed * Time.deltaTime * forwardMoveDir);
+            }
+            else
+            {
+                m_controller.CharacterController.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
+            }
         }
 
         /// <summary>
@@ -82,6 +93,7 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// </summary>
         public void Jump()
         {
+            m_controller.Velocity.y = m_jumpHeight;
         }
 
 
@@ -90,6 +102,16 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// </summary>
         public void Roll()
         {
+
+        }
+
+        /// <summary>
+        /// 현재 땅인지를 체크하는 기능
+        /// </summary>
+        /// <returns>현재 땅에 닿아있다면 true, 아니라면 false</returns
+        public bool IsGrounded()
+        {
+            return m_controller.CharacterController.isGrounded;
         }
     }
 }

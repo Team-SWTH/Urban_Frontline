@@ -28,6 +28,21 @@ namespace UrbanFrontline.Client.Core.Actor.Animation
         bool IsInState(string stateName, int layerIndex);
 
         /// <summary>
+        /// 현재 애니메이션 상태가 끝났는지 확인한다
+        /// </summary>
+        /// <param name="stateName">확인할 상태 이름</param>
+        /// <param name="layerIndex">레이어 번호</param>
+        /// <returns>해당 상태가 끝났으면 true, 아니면 false</returns>
+        bool IsEndState(string stateName, int layerIndex);
+
+        /// <summary>
+        /// 현재 인덱스 가중치를 수정합니다.
+        /// </summary>
+        /// <param name="weight">가중치</param>
+        /// <param name="layerIndex">레이어 번호</param>
+        void SetLayerWeight(float weight, int layerIndex);
+
+        /// <summary>
         /// float 파라미터 세팅
         /// </summary>
         void SetFloat(string paramName, float value);
