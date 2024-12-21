@@ -16,7 +16,9 @@ namespace UrbanFrontline.Client.Core.Input
         Left,
         Backward,
         Right,
+        Run,
         Jump,
-        Roll
+        Roll,
+        FreeLook
     }
 }

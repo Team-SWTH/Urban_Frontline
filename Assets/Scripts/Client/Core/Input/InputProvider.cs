@@ -15,38 +15,51 @@ namespace UrbanFrontline.Client.Core.Input
         #region Fields
 
         /// <summary>
-        /// 플레이어 이동 입력을 (수평/수직)을 Vector2로 발행하는 Reactive Property
+        /// 이동 입력 이벤트 스트림
         /// </summary>
         private Subject<Vector2> m_moveInput = new Subject<Vector2>();
         public IObservable<Vector2> MoveInput => m_moveInput;
 
         /// <summary>
+        /// 달리기 입력 이벤트 스트림
+        /// </summary>
+        private Subject<bool> m_runInput = new Subject<bool>();
+        public IObservable<bool> RunInput => m_runInput;
+
+        /// <summary>
         /// 점프 입력 이벤트 스트림
         /// </summary>
-        private Subject<Unit> m_jumpInput = new Subject<Unit>();
-        public IObservable<Unit> JumpInput => m_jumpInput;
+        private Subject<bool> m_jumpInput = new Subject<bool>();
+        public IObservable<bool> JumpInput => m_jumpInput;
 
         /// <summary>
         /// 구르기 입력 이벤트 스트림
         /// </summary>
-        private Subject<Unit> m_RollInput = new Subject<Unit>();
-        public IObservable<Unit> RollInput => m_RollInput;
+        private Subject<bool> m_rollInput = new Subject<bool>();
+        public IObservable<bool> RollInput => m_rollInput;
+
+        /// <summary>
+        /// 자유시점 입력 이벤트 스트림
+        /// </summary>
+        private ReactiveProperty<bool> m_freeLookInput = new ReactiveProperty<bool>();
+        public IReactiveProperty<bool> FreeLookInput => m_freeLookInput;
 
         #endregion
 
         private void Start()
         {
-            // Update 문을 사용하는 것 보다 Observalbe을 사용하는 것이 성능이 더 좋다고 알려져 있음.
-            // 만약 이게 아니라면, 수정할 의향이 있습니다.
             Observable.EveryUpdate()
                       .Subscribe(_ => 
                       { 
-                          UpdateMoveInput(); 
+                          UpdateMoveInput();
+                          UpdateRunInput();
                           UpdateJumpInput(); 
-                          UpdateRollInput(); 
+                          UpdateRollInput();
+                          UpdateFreeLookInput();
                       }).AddTo(this);
         }
 
+        #region Update Methods
         /// <summary>
         /// 이동 입력을 갱신하는 코드
         /// </summary>
@@ -77,14 +90,19 @@ namespace UrbanFrontline.Client.Core.Input
         }
 
         /// <summary>
+        /// 달리기 입력을 갱신하는 코드
+        /// </summary>
+        private void UpdateRunInput()
+        {
+            m_runInput.OnNext(InputManager.GetKey(KeyAction.Run));
+        }
+
+        /// <summary>
         /// 점프 입력을 갱신하는 코드
         /// </summary>
         private void UpdateJumpInput()
         {
-            if (InputManager.GetKey(KeyAction.Jump))
-            {
-                m_jumpInput.OnNext(Unit.Default);
-            }
+            m_jumpInput.OnNext(InputManager.GetKey(KeyAction.Jump));
         }
 
         /// <summary>
@@ -92,10 +110,16 @@ namespace UrbanFrontline.Client.Core.Input
         /// </summary>
         private void UpdateRollInput()
         {
-            if (InputManager.GetKey(KeyAction.Roll))
-            {
-                m_RollInput.OnNext(Unit.Default);
-            }
+            m_rollInput.OnNext(InputManager.GetKey(KeyAction.Roll));
         }
+
+        /// <summary>
+        /// 자유 시점 입력을 갱신하는 코드
+        /// </summary>
+        private void UpdateFreeLookInput()
+        {
+            m_freeLookInput.Value = InputManager.GetKey(KeyAction.FreeLook);
+        }
+        #endregion
     }
 }

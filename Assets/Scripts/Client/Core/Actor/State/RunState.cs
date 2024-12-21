@@ -1,6 +1,6 @@
 // ========================================
-// File: MoveState.cs
-// Created: 2024-12-20 12:52:38
+// File: RunState.cs
+// Created: 2024-12-21 17:13:40
 // Author: leeinhwan0421
 // ========================================
 
@@ -8,12 +8,12 @@ using UniRx;
 
 using UnityEngine;
 
-using UrbanFrontline.Client.Core.Input;
 using UrbanFrontline.Client.Core.Actor.State.Base;
+using UrbanFrontline.Client.Core.Input;
 
 namespace UrbanFrontline.Client.Core.Actor.State
 {
-    public class WalkState : PlayerStateBase
+    public class RunState : PlayerStateBase
     {
         /// <summary>
         /// 플레이어 컨트롤러 참조 변수
@@ -25,7 +25,7 @@ namespace UrbanFrontline.Client.Core.Actor.State
         /// </summary>
         /// <param name="player">플레이어 컨트롤러</param>
         /// <param name="inputProvider">입력 제공자</param>
-        public WalkState(PlayerController player, IInputProvider inputProvider)
+        public RunState(PlayerController player, IInputProvider inputProvider)
         {
             Player = player;
 
@@ -38,7 +38,7 @@ namespace UrbanFrontline.Client.Core.Actor.State
                                        }
                                        else
                                        {
-                                           Player.CharacterMovement.Walk(move);
+                                           Player.CharacterMovement.Run(move);
                                        }
                                    })
                                    .AddTo(player);
@@ -46,11 +46,21 @@ namespace UrbanFrontline.Client.Core.Actor.State
             inputProvider.RunInput.Where(_ => IsEnable == true)
                                   .Subscribe(run =>
                                   {
-                                      if (run == true)
+                                      if (run == false)
                                       {
-                                          Player.SetMoveState(Player.RunState);
+                                          Player.SetMoveState(Player.WalkState);
                                       }
                                   }).AddTo(player);
+
+            inputProvider.RollInput.Where(_ => IsEnable == true)
+                                   .Where(_ => Player.CharacterMovement.IsGrounded() == true)
+                                   .Subscribe(roll =>
+                                   {
+                                       if (roll)
+                                       {
+                                           Player.SetMoveState(Player.RollState);
+                                       }
+                                   }).AddTo(player);
 
             inputProvider.JumpInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.CharacterMovement.IsGrounded() == true)
@@ -64,18 +74,18 @@ namespace UrbanFrontline.Client.Core.Actor.State
         }
 
         /// <summary>
-        /// Walk 상태에 돌입하였을 때 실행 되는 초기화 함수
+        /// Run 상태에 돌입하였을 때 실행 되는 초기화 함수
         /// </summary>
         public override void Enter()
         {
             base.Enter();
 
-            Player.AnimatorController.Play("Walk", 0);
+            Player.AnimatorController.Play("Run", 0);
             Player.AnimatorController.SetLayerWeight(1.0f, 1);
         }
 
         /// <summary>
-        /// Walk 상태에서 빠져 나갔을 때 실행 되는 초기화 함수
+        /// Run 상태에서 빠져 나갔을 때 실행 되는 초기화 함수
         /// </summary>
         public override void Exit()
         {
@@ -83,7 +93,7 @@ namespace UrbanFrontline.Client.Core.Actor.State
         }
 
         /// <summary>
-        /// Walk 상태일 때, 매 프레임마다 실행되는 함수
+        /// Run 상태일 때, 매 프레임마다 실행되는 함수
         /// </summary>
         public override void UpdateState()
         {

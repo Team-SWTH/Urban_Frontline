@@ -22,15 +22,26 @@ namespace UrbanFrontline.Client.Core.Input
         IObservable<Vector2> MoveInput { get; }
 
         /// <summary>
+        /// 달리기 입력 이벤트 스트림
+        /// 키가 눌릴 경우 OnNext(Unit.Default 발생)
+        /// </summary>
+        IObservable<bool> RunInput { get; }
+
+        /// <summary>
         /// 점프 입력 이벤트 스트림
         /// 키가 눌릴 경우 OnNext(Unit.Default 발생)
         /// </summary>
-        IObservable<Unit> JumpInput { get; }
+        IObservable<bool> JumpInput { get; }
 
         /// <summary>
         /// 구르기 입력 이벤트 스트림
         /// 키가 눌릴 경우 OnNext(Unit.Default 발생)
         /// </summary>
-        IObservable<Unit> RollInput { get; }
+        IObservable<bool> RollInput { get; }
+
+        /// <summary>
+        /// 자유시점 입력 이벤트 스트림
+        /// </summary>
+        IReactiveProperty<bool> FreeLookInput { get; }
     }
 }

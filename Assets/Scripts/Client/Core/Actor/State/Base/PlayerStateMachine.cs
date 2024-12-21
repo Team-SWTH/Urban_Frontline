@@ -4,7 +4,7 @@
 // Author: leeinhwan0421
 // ========================================
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Base
 {
     /// <summary>
     /// 플레이어의 상태 기계

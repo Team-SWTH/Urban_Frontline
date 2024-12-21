@@ -24,8 +24,10 @@ namespace UrbanFrontline.Client.Core.Input
             KeyCode.A,
             KeyCode.S,
             KeyCode.D,
+            KeyCode.LeftShift,
             KeyCode.Space,
-            KeyCode.LeftShift
+            KeyCode.Z,
+            KeyCode.LeftAlt
         };
 
         /// <summary>
@@ -41,6 +43,9 @@ namespace UrbanFrontline.Client.Core.Input
 
         static InputManager()
         {
+            // TODO: 모든 조작키가 완료되기 전까지는 이 코드를 꼭 넣어주세요.
+            ResetKeyBindAll();
+
             LoadKeyBindAll();
         }
 

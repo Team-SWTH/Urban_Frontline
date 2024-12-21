@@ -11,7 +11,9 @@ using UniRx;
 using UrbanFrontline.Client.Core.Input;
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.State;
+using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Actor.Movement;
+using UrbanFrontline.Client.Core.Actor.Camera;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -21,12 +23,18 @@ namespace UrbanFrontline.Client.Core.Actor
     [RequireComponent(typeof(InputProvider))]
     [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(PlayerMovement))]
+    [RequireComponent(typeof(PlayerLookAtCamera))]
     public class PlayerController : MonoBehaviour
     {
         /// <summary>
+        /// 입력 이벤트를 발행하는 인터페이스
+        /// </summary>
+
+        public IInputProvider InputProvider;
+        /// <summary>
         /// 애니메이터를 관리하는 인터페이스
         /// </summary>
-        public IAnimatorController AnimationController;
+        public IAnimatorController AnimatorController;
 
         /// <summary>
         /// 움직임을 관리하는 인터페이스
@@ -34,9 +42,9 @@ namespace UrbanFrontline.Client.Core.Actor
         public ICharacterMovement CharacterMovement;
 
         /// <summary>
-        /// 입력 이벤트를 발행하는 인터페이스
+        /// 카메라와의 연동을 관리하는 인터페이스
         /// </summary>
-        public IInputProvider InputProvider;
+        public ICameraController CameraController;
 
         /// <summary>
         /// 가만히 있을 경우 State
@@ -49,39 +57,88 @@ namespace UrbanFrontline.Client.Core.Actor
         public WalkState WalkState { get; private set; }
 
         /// <summary>
-        /// 플레이어가 가지고 있는 StateMachaine
+        /// 달릴 경우 State
         /// </summary>
-        private PlayerStateMachine m_stateMachine;
+        public RunState RunState { get; private set; }
+
+        /// <summary>
+        /// 구를 경우 State
+        /// </summary>
+        public RollState RollState { get; private set; }
+
+        /// <summary>
+        /// 점프할 경우 State
+        /// </summary>
+        public JumpState JumpState { get; private set; }
+
+        /// <summary>
+        /// 플레이어가 가지고 있는 Move State machine
+        /// </summary>
+        private PlayerStateMachine m_moveStateMachine;
+
+        /// <summary>
+        /// 플레이어가 가지고 있는 조준 State machine
+        /// </summary>
+        private PlayerStateMachine m_aimStateMachine;
 
         private void Awake()
         {
-            AnimationController = GetComponent<IAnimatorController>();
-            CharacterMovement = GetComponent<ICharacterMovement>();
             InputProvider = GetComponent<IInputProvider>();
+            AnimatorController = GetComponent<IAnimatorController>();
+            CharacterMovement = GetComponent<ICharacterMovement>();
+            CameraController = GetComponent<ICameraController>();
 
-            m_stateMachine = new PlayerStateMachine();
+            m_moveStateMachine = new PlayerStateMachine();
+            m_aimStateMachine = new PlayerStateMachine();
 
             IdleState = new IdleState(this, InputProvider);
             WalkState = new WalkState(this, InputProvider);
+            RunState = new RunState(this, InputProvider);
+            RollState = new RollState(this);
+            JumpState = new JumpState(this, InputProvider);
 
-            m_stateMachine.SetInitialState(IdleState);
+            m_moveStateMachine.SetInitialState(IdleState);
 
             Observable.EveryUpdate()
                       .Subscribe(_ =>
                       {
-                          m_stateMachine.Update();
+                          m_moveStateMachine.Update();
                       }).AddTo(this);
+
+            Observable.EveryLateUpdate()
+                      .Subscribe(_ =>
+                      {
+                          CameraController.UpdateCamera();
+                      }).AddTo(this);
+
+            InputProvider.FreeLookInput
+                         .Subscribe(isFreeLook => 
+                         { 
+                             CameraController.EnableFreeLook(isFreeLook); 
+                         }).AddTo(this);
         }
 
         /// <summary>
-        /// 상태를 전환하는 코드
+        /// 움직임 상태를 전환하는 코드
         /// </summary>
-        /// <param name="state">상태를 전환합니다.</param>
-        public void SetState(IPlayerState state)
+        /// <param name="state">전환할 상태</param>
+        public void SetMoveState(IPlayerState state)
         {
             if (state != null)
             {
-                m_stateMachine.ChangeState(state);
+                m_moveStateMachine.ChangeState(state);
+            }
+        }
+
+        /// <summary>
+        /// 조준 상태를 전환하는 코드
+        /// </summary>
+        /// <param name="state">전환할 상태</param>
+        public void SetAimState(IPlayerState state)
+        {
+            if (state != null)
+            {
+                m_aimStateMachine.ChangeState(state);
             }
         }
     }
