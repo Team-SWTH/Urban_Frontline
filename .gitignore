@@ -26,6 +26,13 @@
 # Visual Studio cache directory
 .vs/
 
+# Visual Studio Code cache directory
+.vscode/
+
+# JetBrains Rider cache directory
+.idea/
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
 # Gradle cache directory
 .gradle/
 
@@ -70,50 +77,3 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-
-# JetBrains Rider 추가
-.idea/
-*.iml
-*.iws
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries/
-.idea/libraries/
-.idea/.name
-.idea/modules.xml
-.idea/misc.xml
-.idea/vcs.xml
-.idea/jsLibraryMappings.xml
-
-# Rider logs and index
-.idea/logs/
-.idea/dataSources/
-.idea/dataSources.ids
-.idea/dataSources.local/
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
-.idea/dataSources.xml
-
-# Visual Studio Code 추가
-.vscode/
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
-.vscode/extensions.json
-*.code-workspace
-
-# Visual Studio 추가
-.vs/
-*.csproj.user
-*.vcxproj.user
-*.cache
-*.ilk
-*.idb
-*.suo
-*.unsuccessfulbuild
-*.userprefs
-*.log
-
-# Rider용 Unity 추가
-/[Aa]ssets/Plugins/Editor/JetBrains*
