@@ -9,8 +9,11 @@ using UniRx;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Move
 {
+    /// <summary>
+    /// [이동]: 구를 경우의 상태
+    /// </summary>
     public class RollState : PlayerStateBase
     {
         /// <summary>
