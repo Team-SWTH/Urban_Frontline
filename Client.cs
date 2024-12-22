@@ -4,6 +4,7 @@
 // Author: LHBM04
 // ========================================
 
+using NaughtyAttributes;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -38,7 +39,7 @@ namespace UrbanFrontline.Server.Core.Networks
         public bool IsConnected { get; private set; }
 
         /// <summary>
-        /// 클라이언트 마지막 핑 시간.
+        /// 클라이언트 마지막 핑 시간.   
         /// </summary>
         public DateTime LastPingTime { get; private set; }
 
@@ -46,7 +47,7 @@ namespace UrbanFrontline.Server.Core.Networks
         /// 클라이언트 핑.
         /// </summary>
         public float Ping => (float)(DateTime.Now - LastPingTime).TotalMilliseconds;
-        #region Buffer
+
         /// <summary>
         /// 수신 버퍼.
         /// </summary>
@@ -56,9 +57,8 @@ namespace UrbanFrontline.Server.Core.Networks
         /// 송신 버퍼.
         /// </summary>
         public SendBuffer SendBuffer { get; private set; }
-        #endregion
 
-        public Client(IPEndPoint endPoint) // 기본 타임아웃 30초
+        public Client(IPEndPoint endPoint)
         {
             ClientID = Guid.NewGuid();
             EndPoint = endPoint;
@@ -67,48 +67,28 @@ namespace UrbanFrontline.Server.Core.Networks
             SendBuffer = new(1024);     // 예시 버퍼 크기
         }
 
-        /// <summary>
-        /// 해당 서버에 클라이언트를 연결합니다.
-        /// </summary>
-        /// <param name="endPoint"></param>
         public void Connect(IPEndPoint endPoint)
         {
             EndPoint = endPoint;
             IsConnected = true;
-            LastPingTime = DateTime.Now;
             Debug.Log($"Client {ClientID} connected to {EndPoint}.");
         }
 
-        /// <summary>
-        /// 해당 클라이언트의 접속을 해제합니다.
-        /// </summary>
         public void Disconnect()
         {
             IsConnected = false;
             Debug.Log($"Client {ClientID} disconnected.");
         }
 
-        /// <summary>
-        /// 클라이언트의 정보를 업데이트합니다.
-        /// </summary>
-        /// <param name="pingTime"></param>
         public void Update(DateTime pingTime)
         {
             LastPingTime = pingTime;
         }
 
-        /// <summary>
-        /// 클라이언트가 타임아웃되었는지 확인합니다.
-        /// </summary>
-        /// <returns>타임아웃되었으면 true, 그렇지 않으면 false</returns>
-        public bool IsTimedOut(float timeoutDuration)
-        {
-            return (DateTime.Now - LastPingTime).TotalMilliseconds > timeoutDuration;
-        }
-
         public bool Equals(Client other)
         {
-            return other is null ? false : ClientID == other.ClientID;
+            if (other is null) return false;
+            return ClientID == other.ClientID;
         }
 
         public override bool Equals(object obj)
@@ -123,7 +103,8 @@ namespace UrbanFrontline.Server.Core.Networks
 
         public static bool operator ==(Client left, Client right)
         {
-            return left is null ? right is null : left.Equals(right);
+            if (left is null) return right is null;
+            return left.Equals(right);
         }
 
         public static bool operator !=(Client left, Client right)
