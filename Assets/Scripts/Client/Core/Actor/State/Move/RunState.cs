@@ -11,8 +11,11 @@ using UnityEngine;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Move
 {
+    /// <summary>
+    /// [이동]: 달리는 상태
+    /// </summary>
     public class RunState : PlayerStateBase
     {
         /// <summary>

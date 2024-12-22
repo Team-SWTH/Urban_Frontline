@@ -4,8 +4,11 @@ using UniRx;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Move
 {
+    /// <summary>
+    /// [이동]: 점프 및 착지까지의 상태
+    /// </summary>
     public class JumpState : PlayerStateBase
     {
         /// <summary>

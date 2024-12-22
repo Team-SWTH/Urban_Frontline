@@ -9,9 +9,12 @@ using UnityEngine;
 using UniRx;
 
 using UrbanFrontline.Client.Core.Input;
-using UrbanFrontline.Client.Core.Actor.Animation;
-using UrbanFrontline.Client.Core.Actor.State;
+
 using UrbanFrontline.Client.Core.Actor.State.Base;
+using UrbanFrontline.Client.Core.Actor.State.Move;
+using UrbanFrontline.Client.Core.Actor.State.Fire;
+
+using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.Camera;
 
@@ -26,6 +29,7 @@ namespace UrbanFrontline.Client.Core.Actor
     [RequireComponent(typeof(PlayerLookAtCamera))]
     public class PlayerController : MonoBehaviour
     {
+        #region Interfaces
         /// <summary>
         /// 입력 이벤트를 발행하는 인터페이스
         /// </summary>
@@ -45,7 +49,9 @@ namespace UrbanFrontline.Client.Core.Actor
         /// 카메라와의 연동을 관리하는 인터페이스
         /// </summary>
         public ICameraController CameraController;
+        #endregion
 
+        #region Move State Classes
         /// <summary>
         /// 가만히 있을 경우 State
         /// </summary>
@@ -70,6 +76,7 @@ namespace UrbanFrontline.Client.Core.Actor
         /// 점프할 경우 State
         /// </summary>
         public JumpState JumpState { get; private set; }
+        #endregion
 
         /// <summary>
         /// 플레이어가 가지고 있는 Move State machine

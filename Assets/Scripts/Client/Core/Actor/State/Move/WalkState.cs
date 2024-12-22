@@ -11,8 +11,11 @@ using UnityEngine;
 using UrbanFrontline.Client.Core.Input;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 
-namespace UrbanFrontline.Client.Core.Actor.State
+namespace UrbanFrontline.Client.Core.Actor.State.Move
 {
+    /// <summary>
+    /// [이동]: 걷는 상태
+    /// </summary>
     public class WalkState : PlayerStateBase
     {
         /// <summary>
