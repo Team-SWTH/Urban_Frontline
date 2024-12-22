@@ -1,7 +1,7 @@
 // ========================================
 // File: TransformPacket.cs
 // Created: 2024-12-20 16:34:01
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System.IO;
@@ -13,7 +13,12 @@ namespace UrbanFrontline.Server.Core.Actors
     {
         public override EType Type => EType.Transform;
 
-        protected override void WriteData(BinaryWriter writer)
+        public override byte[] Serialize()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Deserialize(byte[] data)
         {
             throw new System.NotImplementedException();
         }

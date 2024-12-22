@@ -1,5 +1,5 @@
 // ========================================
-// File: ClientManager.cs
+// File: ClientHandler.cs
 // Created: 2024-12-20 03:02:31
 // Author: LHBM04
 // ========================================
@@ -19,119 +19,122 @@ namespace UrbanFrontline.Server.Core.Networks
     public sealed class ClientHandler
     {
         /// <summary>
-        /// 서버 내 클라이언트를 모으는 List.
+        /// 클라이언트들을 관리하는 컬렉션.
         /// </summary>
-        private readonly ConcurrentDictionary<Guid, Client> m_clients = new();
+        private readonly ConcurrentDictionary<Guid, Client> _clients = new();
 
         /// <summary>
-        /// 클라이언트 추가 및 제거에 사용하는 Lock.
+        /// 클라이언트를 관리하는 메서드.
         /// </summary>
-        private readonly object m_lock = new object();
-
-        /// <summary>
-        /// 새로운 클라이언트를 등록합니다.
-        /// </summary>
-        /// <param name="client">등록할 클라이언트</param>
-        public void RegisterClient(Client client)
+        /// <param name="endPoint">클라이언트의 IP 엔드포인트.</param>
+        /// <param name="data">수신된 데이터.</param>
+        public void HandleClient(IPEndPoint endPoint, byte[] data)
         {
+            // 1. 클라이언트를 검색하거나 등록
+            var client = GetClientByEndPoint(endPoint);
             if (client == null)
             {
-                throw new ArgumentNullException(nameof(client));
+                client = new Client(endPoint);
+                RegisterClient(client);
+                Debug.Log($"New client connected: {endPoint}");
             }
 
-            lock (m_lock)
+            // 2. 데이터 처리
+            if (data != null && data.Length > 0)
             {
-                m_clients[client.ID] = client;
-                Console.WriteLine($"Client {client.ID} registered.");
+                // 클라이언트 핑 업데이트
+                client.Update(DateTime.Now);
+
+                // 데이터 처리
+                ProcessClientData(client, data);
+            }
+
+            // 3. 연결 상태 확인 및 정리
+            if (!client.IsConnected)
+            {
+                RemoveClient(client.ClientID);
             }
         }
 
-        public bool IsClientRegistered(IPEndPoint endPoint)
+        /// <summary>
+        /// 클라이언트를 등록합니다.
+        /// </summary>
+        public bool RegisterClient(Client client)
         {
-            lock (m_lock)
+            if (client == null || client.EndPoint == null)
             {
-                return m_clients.Any(client => client.Value.EndPoint == endPoint);
+                Debug.LogWarning("The client to be registered is invalid.");
+                return false;
             }
-        }
 
-        public Client GetClient(IPEndPoint endPoint)
-        {
-            lock (m_lock)
+            bool added = _clients.TryAdd(client.ClientID, client);
+            if (added)
             {
-                return m_clients.FirstOrDefault(x => x.Value.EndPoint == endPoint).Value;
+                Debug.Log($"Client registered successfully: {client.ClientID} ({client.EndPoint}).");
             }
+            else
+            {
+                Debug.LogWarning($"Client registration failed: {client.ClientID} ({client.EndPoint}).");
+            }
+
+            return added;
         }
 
         /// <summary>
         /// 클라이언트를 제거합니다.
         /// </summary>
-        /// <param name="clientId">제거할 클라이언트의 ID</param>
-        public void RemoveClient(Guid clientId)
+        public bool RemoveClient(Guid clientID)
         {
-            lock (m_lock)
+            if (_clients.TryRemove(clientID, out var removedClient))
             {
-                if (m_clients.TryRemove(clientId, out Client client))
-                {
-                    client.Disconnect();
-                    Console.WriteLine($"Client {clientId} removed.");
-                }
+                removedClient.Disconnect();
+                Debug.Log($"Client removed successfully: {clientID}.");
+                return true;
+            }
+
+            Debug.LogWarning($"Client removal failed: {clientID}.");
+            return false;
+        }
+
+        /// <summary>
+        /// 클라이언트 데이터를 처리합니다.
+        /// </summary>
+        private void ProcessClientData(Client client, byte[] data)
+        {
+            try
+            {
+                client.ReceiveBuffer.Read(data);
+                Debug.Log($"Data received from client {client.ClientID}: {data.Length} bytes");
+
+                // 데이터에 대한 추가 처리 로직 구현
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error processing data for client {client.ClientID}: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// 특정 클라이언트에 메시지를 보냅니다.
+        /// IP 엔드포인트를 기반으로 클라이언트를 검색합니다.
         /// </summary>
-        /// <param name="clientId">클라이언트 ID</param>
-        /// <param name="message">보낼 메시지</param>
-        public void SendMessage(Guid clientId, byte[] message)
+        public Client GetClientByEndPoint(IPEndPoint endPoint)
         {
-            if (m_clients.TryGetValue(clientId, out var client))
-            {
-                client.Send(message);
-            }
-            else
-            {
-#if UNITY_EDITOR
-                Debug.LogError($"Client {clientId} not found.");
-#endif
-            }
+            return _clients.Values.FirstOrDefault(c => c.EndPoint.Equals(endPoint));
         }
 
         /// <summary>
-        /// 모든 클라이언트에 메시지를 브로드캐스트합니다.
+        /// 연결이 끊어진 클라이언트를 정리합니다.
         /// </summary>
-        /// <param name="message">브로드캐스트할 메시지</param>
-        public void BroadcastMessage(byte[] message)
+        public void CleanupDisconnectedClients()
         {
-            foreach (var client in m_clients.Values)
+            var disconnectedClients = _clients.Values.Where(c => !c.IsConnected).ToList();
+            foreach (var client in disconnectedClients)
             {
-                client.Send(message);
-            }
-        }
-
-        /// <summary>
-        /// 현재 활성 상태의 클라이언트 목록을 반환합니다.
-        /// </summary>
-        /// <returns>활성 클라이언트 ID 목록</returns>
-        public IEnumerable<Guid> GetActiveClients()
-        {
-            return m_clients.Keys;
-        }
-
-        /// <summary>
-        /// 모든 클라이언트를 정리하고 종료합니다.
-        /// </summary>
-        public void ShutdownAllClients()
-        {
-            foreach (var client in m_clients.Values)
-            {
-                client.Disconnect();
+                RemoveClient(client.ClientID);
             }
 
-            m_clients.Clear();
-#if UNITY_EDITOR
-            Debug.Log("All clients have been disconnected.");
-#endif
+            Debug.Log($"Number of cleaned up clients: {disconnectedClients.Count}.");
         }
     }
 }
+

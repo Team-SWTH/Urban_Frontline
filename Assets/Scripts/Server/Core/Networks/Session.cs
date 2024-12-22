@@ -13,23 +13,20 @@ namespace UrbanFrontline.Server.Core.Networks
     /// <summary>
     /// 클라이언트와 서버 간의 세션 정보를 관리합니다.
     /// </summary>
-    public sealed class Session : IEquatable<Session>
+    [Serializable]
+    public class Session : IEquatable<Session>
     {
         /// <summary>
         /// 해당 세션의 주인(클라이언트).
         /// </summary>
-        public Client Owner 
-        { 
-            get; 
-        }
+        [SerializeField]
+        private Client m_owner;
 
         /// <summary>
         /// 해당 세션의 아이디.
         /// </summary>
-        public Guid ID 
-        { 
-            get; 
-        }
+        [SerializeField]
+        private string m_id; 
 
         /// <summary>
         /// 해당 세션이 시작된 시간.
@@ -50,8 +47,8 @@ namespace UrbanFrontline.Server.Core.Networks
 
         public Session(Client client)
         {
-            Owner = client;
-            ID = Guid.NewGuid();
+            m_owner = client;
+            m_id = Guid.NewGuid().ToString();
             ConnectedTime = DateTime.Now;
             LastActiveTime = DateTime.Now;
         }
@@ -77,27 +74,27 @@ namespace UrbanFrontline.Server.Core.Networks
         /// </summary>
         /// <param name="other">비교할 다른 Session 객체</param>
         /// <returns>동일하면 true, 그렇지 않으면 false</returns>
-        public bool Equals(Session? other)
+        public bool Equals(Session other)
         {
-            return other is null ? false : ID == other.ID;
+            return other is null ? false : m_id == other.m_id;
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return obj is Session session ? Equals(session) : false;
         }
 
         public override int GetHashCode()
         {
-            return ID.GetHashCode();
+            return m_id.GetHashCode();
         }
 
-        public static bool operator ==(Session? left, Session? right)
+        public static bool operator ==(Session left, Session right)
         {
             return left is null ? right is null : left.Equals(right);
         }
 
-        public static bool operator !=(Session? left, Session? right)
+        public static bool operator !=(Session left, Session right)
         {
             return !(left == right);
         }
