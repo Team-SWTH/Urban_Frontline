@@ -41,12 +41,10 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
 
             inputProvider.JumpInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.CharacterMovement.IsGrounded() == true)
-                                   .Subscribe(jump =>
+                                   .Where(jump => jump == true)
+                                   .Subscribe(_ =>
                                    {
-                                       if (jump)
-                                       {
-                                           Player.SetMoveState(Player.JumpState);
-                                       }
+                                       Player.SetMoveState(Player.JumpState);
                                    }).AddTo(player);
         }
 
@@ -57,8 +55,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         {
             base.Enter();
 
-            Player.AnimatorController.Play("Idle", 0);
-            Player.AnimatorController.SetLayerWeight(1.0f, 1);
+            Player.AnimatorController.Play("Idle", "Base Layer");
+            Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
         }
 
         /// <summary>
@@ -67,14 +65,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
-        }
-
-        /// <summary>
-        /// Idle 상태일 때, 매 프레임마다 실행되는  함수
-        /// </summary>
-        public override void UpdateState()
-        {
-            base.UpdateState();
         }
     }
 }

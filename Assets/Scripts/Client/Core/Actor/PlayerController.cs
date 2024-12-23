@@ -17,6 +17,7 @@ using UrbanFrontline.Client.Core.Actor.State.Fire;
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.Camera;
+using Unity.Cinemachine;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -78,6 +79,23 @@ namespace UrbanFrontline.Client.Core.Actor
         public JumpState JumpState { get; private set; }
         #endregion
 
+        #region Fire State Classes
+        /// <summary>
+        /// 비조준 State
+        /// </summary>
+        public UnaimedState UnaimedState { get; private set; }
+        
+        /// <summary>
+        /// 지향 사격 State
+        /// </summary>
+        public AimingState AimingState { get; private set; }
+
+        /// <summary>
+        /// 조준 State
+        /// </summary>
+        public ADSState ADSState { get; private set; }
+        #endregion
+
         /// <summary>
         /// 플레이어가 가지고 있는 Move State machine
         /// </summary>
@@ -104,13 +122,12 @@ namespace UrbanFrontline.Client.Core.Actor
             RollState = new RollState(this);
             JumpState = new JumpState(this, InputProvider);
 
-            m_moveStateMachine.SetInitialState(IdleState);
+            UnaimedState = new UnaimedState(this, InputProvider);
+            AimingState = new AimingState(this, InputProvider);
+            ADSState = new ADSState(this, InputProvider);
 
-            Observable.EveryUpdate()
-                      .Subscribe(_ =>
-                      {
-                          m_moveStateMachine.Update();
-                      }).AddTo(this);
+            m_moveStateMachine.SetInitialState(IdleState);
+            m_aimStateMachine.SetInitialState(UnaimedState);
 
             Observable.EveryLateUpdate()
                       .Subscribe(_ =>

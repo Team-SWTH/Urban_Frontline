@@ -19,36 +19,57 @@ namespace UrbanFrontline.Client.Core.Physics
         /// </summary>
         private CharacterController m_characterController;
 
-        public CharacterController CharacterController => m_characterController;
-
+        [Header("Physics Values")]
         /// <summary>
         /// 중력 가속도 가중치
         /// </summary>
         [Tooltip("중력 가속도 가중치")]
-        public float Gravity = -9.8f;
+        [SerializeField]
+        private float m_gravity = -9.8f;
 
         /// <summary>
         /// 공기 저항
         /// </summary>
         [Tooltip("공기 저항")]
-        public float AirDrag = 0.001f;
+        [SerializeField]
+        private float m_airDrag = 0.001f;
 
         /// <summary>
         /// 현재 가속도
         /// </summary>
         [Tooltip("현재 가속도")]
-        public Vector3 Velocity;
+        [SerializeField]
+        private Vector3 m_velocity;
 
+        [Space(10.0f)]
+        [Header("Ground Values")]
+        /// <summary>
+        /// 현재 땅에 닿아 있는지
+        /// </summary>
+        [Tooltip("현재 땅에 닿아 있는지")]
+        public bool IsGrounded;
+
+        /// <summary>
+        /// 땅 체크 길이
+        /// </summary>
+        [Tooltip("땅 체크 길이")]
+        [SerializeField]
+        private float m_rayDistance;
+
+        [Tooltip("땅 레이어")]
+        [SerializeField]
+        private LayerMask m_layerMask;
         #endregion
 
         private void Start()
         {
             m_characterController = GetComponent<CharacterController>();
 
-            Observable.EveryFixedUpdate()
+            Observable.EveryUpdate()
                       .Subscribe(_ => 
                       { 
-                          HandlePhysics(); 
+                          HandlePhysics();
+                          CheckOnGrounded();
                       }).AddTo(this);
         }
 
@@ -57,15 +78,15 @@ namespace UrbanFrontline.Client.Core.Physics
         /// </summary>
         private void HandlePhysics()
         {
-            Velocity += Gravity * Time.fixedDeltaTime * Vector3.up;
-            Velocity += AddAirForce();
+            m_velocity += m_gravity * Time.deltaTime * Vector3.up;
+            m_velocity += AddAirForce();
 
-            Vector3 displacement = Velocity * Time.fixedDeltaTime;
+            Vector3 displacement = m_velocity * Time.deltaTime;
             m_characterController.Move(displacement);
 
-            if (m_characterController.isGrounded && Velocity.y < 0)
+            if (m_characterController.isGrounded && m_velocity.y < 0)
             {
-                Velocity.y = 0;
+                m_velocity.y = -0.01f;
             }
         }
 
@@ -74,11 +95,31 @@ namespace UrbanFrontline.Client.Core.Physics
         /// </summary>
         private Vector3 AddAirForce()
         {
-            float velocityMag = Velocity.magnitude;
-            Vector3 velocityDir = Velocity.normalized;
-            float airDragMag = AirDrag * Mathf.Pow(velocityMag, 2f);
+            float velocityMag = m_velocity.magnitude;
+            Vector3 velocityDir = m_velocity.normalized;
+            float airDragMag = m_airDrag * Mathf.Pow(velocityMag, 2f);
 
             return airDragMag * -velocityDir;
+        }
+
+        private void CheckOnGrounded()
+        {
+            RaycastHit hit;
+            IsGrounded = UnityEngine.Physics.Raycast(transform.position, Vector3.down, out hit, m_rayDistance, m_layerMask);
+
+#if UNITY_EDITOR
+            Debug.DrawRay(transform.position, Vector3.down * m_rayDistance, Color.green);
+#endif
+        }
+
+        public void AddVelocity(Vector3 velocity)
+        {
+            m_velocity += velocity;
+        }
+
+        public void Move(Vector3 moveVector)
+        {
+            m_characterController.Move(moveVector);
         }
     }
 }

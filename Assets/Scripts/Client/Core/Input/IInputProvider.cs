@@ -43,5 +43,15 @@ namespace UrbanFrontline.Client.Core.Input
         /// 자유시점 입력 이벤트 스트림
         /// </summary>
         IReactiveProperty<bool> FreeLookInput { get; }
+
+        /// <summary>
+        /// 발사 입력 이벤트 스트림
+        /// </summary>
+        IObservable<bool> FireInput { get; } 
+
+        /// <summary>
+        /// 조준 입력 이벤트 스트림
+        /// </summary>
+        IObservable<bool> ADSInput { get; }
     }
 }
