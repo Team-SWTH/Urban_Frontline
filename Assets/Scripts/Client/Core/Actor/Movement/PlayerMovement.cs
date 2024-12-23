@@ -60,13 +60,13 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
             Vector3 moveDir = new Vector3(direction.x, 0, direction.y).normalized;
             Vector3 forwardMoveDir = transform.TransformDirection(moveDir.normalized);
 
-            if (m_controller.CharacterController.isGrounded)
+            if (m_controller.IsGrounded)
             {
-                m_controller.CharacterController.Move(m_walkSpeed * Time.deltaTime * forwardMoveDir);
+                m_controller.Move(m_walkSpeed * Time.deltaTime * forwardMoveDir);
             }
             else
             {
-                m_controller.CharacterController.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
+                m_controller.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
             }
         }
 
@@ -78,13 +78,13 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
             Vector3 moveDir = new Vector3(direction.x, 0, direction.y).normalized;
             Vector3 forwardMoveDir = transform.TransformDirection(moveDir.normalized);
 
-            if (m_controller.CharacterController.isGrounded)
+            if (m_controller.IsGrounded)
             {
-                m_controller.CharacterController.Move(m_runSpeed * Time.deltaTime * forwardMoveDir);
+                m_controller.Move(m_runSpeed * Time.deltaTime * forwardMoveDir);
             }
             else
             {
-                m_controller.CharacterController.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
+                m_controller.Move(m_airSpeed * Time.deltaTime * forwardMoveDir);
             }
         }
 
@@ -93,7 +93,7 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// </summary>
         public void Jump()
         {
-            m_controller.Velocity.y = m_jumpHeight;
+            m_controller.AddVelocity(new Vector3(0.0f, m_jumpHeight, 0.0f));
         }
 
 
@@ -111,7 +111,7 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// <returns>현재 땅에 닿아있다면 true, 아니라면 false</returns
         public bool IsGrounded()
         {
-            return m_controller.CharacterController.isGrounded;
+            return m_controller.IsGrounded;
         }
     }
 }

@@ -1,3 +1,9 @@
+// ========================================
+// File: JumpState.cs
+// Created: 2024-12-20 12:49:16
+// Author: leeinhwan0421
+// ========================================
+
 using Cysharp.Threading.Tasks;
 using System;
 using UniRx;
@@ -38,10 +44,12 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         {
             base.Enter();
 
-            Player.AnimatorController.Play("Jump", 0);
-            Player.AnimatorController.SetLayerWeight(1.0f, 1);
+            Player.AnimatorController.Play("Jump", "Base Layer");
+            Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
 
             Player.CharacterMovement.Jump();
+
+            WaitOnGround().Forget();
         }
 
         /// <summary>
@@ -51,20 +59,15 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         {
             base.Exit();
 
-            Player.AnimatorController.Play("Land", 0);
+            Player.AnimatorController.Play("Land", "Base Layer");
         }
 
-        /// <summary>
-        /// Jump 상태일 때, 매 프레임마다 실행되는 함수
-        /// </summary>
-        public override void UpdateState()
+        public async UniTaskVoid WaitOnGround()
         {
-            base.UpdateState();
+            await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+            await UniTask.WaitUntil(() => Player.CharacterMovement.IsGrounded());
 
-            if (Player.CharacterMovement.IsGrounded())
-            {
-                Player.SetMoveState(Player.IdleState);
-            }
+            Player.SetMoveState(Player.IdleState);
         }
     }
 }

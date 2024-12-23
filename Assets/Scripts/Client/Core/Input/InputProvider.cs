@@ -44,6 +44,18 @@ namespace UrbanFrontline.Client.Core.Input
         private ReactiveProperty<bool> m_freeLookInput = new ReactiveProperty<bool>();
         public IReactiveProperty<bool> FreeLookInput => m_freeLookInput;
 
+        /// <summary>
+        /// 발사 입력 이벤트 스트림
+        /// </summary>
+        private Subject<bool> m_fireInput = new Subject<bool>();
+        public IObservable<bool> FireInput => m_fireInput;
+
+        /// <summary>
+        /// 조준 입력 이벤트 스트림
+        /// </summary>
+        private Subject<bool> m_adsInput = new Subject<bool>();
+        public IObservable<bool> ADSInput => m_adsInput;
+
         #endregion
 
         private void Start()
@@ -56,6 +68,8 @@ namespace UrbanFrontline.Client.Core.Input
                           UpdateJumpInput(); 
                           UpdateRollInput();
                           UpdateFreeLookInput();
+                          UpdateFireInput();
+                          UpdateADSInput();
                       }).AddTo(this);
         }
 
@@ -119,6 +133,22 @@ namespace UrbanFrontline.Client.Core.Input
         private void UpdateFreeLookInput()
         {
             m_freeLookInput.Value = InputManager.GetKey(KeyAction.FreeLook);
+        }
+
+        /// <summary>
+        /// 발사 입력을 갱신하는 코드
+        /// </summary>
+        private void UpdateFireInput()
+        {
+            m_fireInput.OnNext(InputManager.GetKey(KeyAction.Fire));
+        }
+
+        /// <summary>
+        /// 조준 입력을 갱신하는 코드
+        /// </summary>
+        private void UpdateADSInput()
+        {
+            m_adsInput.OnNext(InputManager.GetKey(KeyAction.ADS));
         }
         #endregion
     }

@@ -36,13 +36,5 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
             CurrentState = newState;
             CurrentState.Enter();
         }
-
-        /// <summary>
-        /// 현재 상태일 때 매 프레임마다 호출되어야 하는 함수
-        /// </summary>
-        public void Update()
-        {
-            CurrentState?.UpdateState();
-        }
     }
 }

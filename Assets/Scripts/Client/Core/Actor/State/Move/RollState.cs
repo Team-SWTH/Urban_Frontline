@@ -1,9 +1,11 @@
 // ========================================
-// File: IdleState.cs
+// File: RollState.cs
 // Created: 2024-12-20 12:49:16
 // Author: leeinhwan0421
 // ========================================
 
+using Cysharp.Threading.Tasks;
+using System;
 using UniRx;
 
 using UrbanFrontline.Client.Core.Actor.State.Base;
@@ -37,8 +39,10 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         {
             base.Enter();
 
-            Player.AnimatorController.Play("Roll", 0);
-            Player.AnimatorController.SetLayerWeight(0.0f, 1);
+            Player.AnimatorController.Play("Roll", "Base Layer");
+            Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
+
+            WaitOnEndState().Forget();
         }
 
         /// <summary>
@@ -52,18 +56,17 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         /// <summary>
         /// Roll 상태일 때, 매 프레임마다 실행되는  함수
         /// </summary>
-        public override void UpdateState()
+        private async UniTaskVoid WaitOnEndState()
         {
-            base.UpdateState();
+            while (!Player.AnimatorController.IsEndState("Roll", "Base Layer"))
+            {
+                Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
+                Player.SetAimState(Player.UnaimedState);
 
-            if (Player.AnimatorController.IsEndState("Roll", 0))
-            {
-                Player.SetMoveState(Player.IdleState);
+                await UniTask.WaitForEndOfFrame();
             }
-            else
-            {
-                Player.CharacterMovement.Roll();
-            }
+
+            Player.SetMoveState(Player.IdleState);
         }
     }
 }

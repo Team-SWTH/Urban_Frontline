@@ -12,13 +12,22 @@ namespace UrbanFrontline.Client.Core.Input
     /// </summary>
     public enum KeyAction
     {
+        // 움직임
         Forward,
         Left,
         Backward,
         Right,
+        // 달리기
         Run,
+        // 점프
         Jump,
+        // 구르기
         Roll,
-        FreeLook
+        // 자유 시점
+        FreeLook,
+        // 발사
+        Fire,
+        // 정조준
+        ADS
     }
 }

@@ -39,21 +39,25 @@ namespace UrbanFrontline.Client.Core.Actor.Animation
         /// <summary>
         /// 특정 레이어의 특정 애니메이션 상태를 재생
         /// </summary>
-        /// <param name="animationName">애니메이션 상태 이름</param>
-        /// <param name="layerIndex">레이어 번호</param>
-        public void Play(string animationName, int layerIndex)
+        /// <param name="stateName">애니메이션 상태 이름</param>
+        /// <param name="layerName">레이어 이름</param>
+        public void Play(string stateName, string layerName)
         {
-            m_animator.CrossFade(animationName, m_transitionDuration, layerIndex);
+            int layerIndex = m_animator.GetLayerIndex(layerName);
+
+            m_animator.CrossFade(stateName, m_transitionDuration, layerIndex);
         }
 
         /// <summary>
         /// 특정 레이어의 현재 애니메이션 상태가 stateName으로 지정한 상태와 일치하는지 판별
         /// </summary>
         /// <param name="stateName">애니메이션 상태 이름</param>
-        /// <param name="layerIndex">레이어 번호</param>
+        /// <param name="layerName">레이어 이름</param>
         /// <returns>일치하면 True, 일치하지 않으면 False</returns>
-        public bool IsInState(string stateName, int layerIndex)
+        public bool IsInState(string stateName, string layerName)
         {
+            int layerIndex = m_animator.GetLayerIndex(layerName);
+
             AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(layerIndex);
             return stateInfo.IsName(stateName);
         }
@@ -62,21 +66,25 @@ namespace UrbanFrontline.Client.Core.Actor.Animation
         /// 현재 애니메이션 상태가 끝났는지 확인한다
         /// </summary>
         /// <param name="stateName">확인할 상태 이름</param>
-        /// <param name="layerIndex">레이어 번호</param>
+        /// <param name="layerName">레이어 이름</param>
         /// <returns>해당 상태가 끝났으면 true, 아니면 false</returns>
-        public bool IsEndState(string stateName, int layerIndex)
+        public bool IsEndState(string stateName, string layerName)
         {
+            int layerIndex = m_animator.GetLayerIndex(layerName);
+
             AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(layerIndex);
             return stateInfo.IsName(stateName) && stateInfo.normalizedTime >= 1.0f;
         }
 
         /// <summary>
-        /// 현재 인덱스 가중치를 수정합니다.
+        /// 레이어 가중치를 수정합니다.
         /// </summary>
         /// <param name="weight">가중치</param>
-        /// <param name="layerIndex">레이어 번호</param>
-        public void SetLayerWeight(float weight, int layerIndex)
+        /// <param name="layerName">레이어 이름</param>
+        public void SetLayerWeight(float weight, string layerName)
         {
+            int layerIndex = m_animator.GetLayerIndex(layerName);
+
             m_animator.SetLayerWeight(layerIndex, weight);
         }
 

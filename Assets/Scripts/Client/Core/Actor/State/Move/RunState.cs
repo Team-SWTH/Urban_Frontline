@@ -47,32 +47,26 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
                                    .AddTo(player);
 
             inputProvider.RunInput.Where(_ => IsEnable == true)
-                                  .Subscribe(run =>
+                                  .Where(run => run == false)
+                                  .Subscribe(_ =>
                                   {
-                                      if (run == false)
-                                      {
-                                          Player.SetMoveState(Player.WalkState);
-                                      }
+                                        Player.SetMoveState(Player.WalkState);
                                   }).AddTo(player);
 
             inputProvider.RollInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.CharacterMovement.IsGrounded() == true)
-                                   .Subscribe(roll =>
+                                   .Where(roll => roll == true)
+                                   .Subscribe(_ =>
                                    {
-                                       if (roll)
-                                       {
-                                           Player.SetMoveState(Player.RollState);
-                                       }
+                                        Player.SetMoveState(Player.RollState);
                                    }).AddTo(player);
 
             inputProvider.JumpInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.CharacterMovement.IsGrounded() == true)
-                                   .Subscribe(jump =>
+                                   .Where(jump => jump == true)
+                                   .Subscribe(_ =>
                                    {
-                                       if (jump)
-                                       {
-                                           Player.SetMoveState(Player.JumpState);
-                                       }
+                                       Player.SetMoveState(Player.JumpState);
                                    }).AddTo(player);
         }
 
@@ -83,8 +77,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         {
             base.Enter();
 
-            Player.AnimatorController.Play("Run", 0);
-            Player.AnimatorController.SetLayerWeight(1.0f, 1);
+            Player.AnimatorController.Play("Run", "Base Layer");
+            Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
         }
 
         /// <summary>
@@ -93,14 +87,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
-        }
-
-        /// <summary>
-        /// Run 상태일 때, 매 프레임마다 실행되는 함수
-        /// </summary>
-        public override void UpdateState()
-        {
-            base.UpdateState();
         }
     }
 }

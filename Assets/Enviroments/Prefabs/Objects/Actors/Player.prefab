@@ -226,7 +226,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 2.1, z: 0.2}
 --- !u!114 &8341429246997136019
 MonoBehaviour:
@@ -240,9 +240,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1510b6573d63a5744a4cf519719eef56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Gravity: -20
-  AirDrag: 0.001
-  Velocity: {x: 0, y: 0, z: 0}
+  m_gravity: -20
+  m_airDrag: 0.001
+  m_velocity: {x: 0, y: 0, z: 0}
+  IsGrounded: 0
+  m_rayDistance: 0.4
+  m_layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &319363934655134071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,9 +289,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6d0b7424873c0547b1ea95f03c40286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_walkSpeed: 15
-  m_runSpeed: 40
-  m_airSpeed: 10
+  m_walkSpeed: 10
+  m_runSpeed: 25
+  m_airSpeed: 8
   m_jumpHeight: 16
 --- !u!114 &1947219516705396671
 MonoBehaviour:
@@ -408,7 +413,7 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0, y: 0, z: 0.5}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -479,7 +484,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0.2, y: 0.2}
+  Damping: {x: 0, y: 0}
   Lookahead:
     Enabled: 0
     Time: 0
