@@ -5,7 +5,7 @@
 // ========================================
 
 using System;
-using UniRx;
+using R3;
 using UnityEngine;
 
 namespace UrbanFrontline.Client.Core.Input
@@ -18,43 +18,43 @@ namespace UrbanFrontline.Client.Core.Input
         /// 이동 입력 이벤트 스트림
         /// </summary>
         private Subject<Vector2> m_moveInput = new Subject<Vector2>();
-        public IObservable<Vector2> MoveInput => m_moveInput;
+        public Observable<Vector2> MoveInput => m_moveInput;
 
         /// <summary>
         /// 달리기 입력 이벤트 스트림
         /// </summary>
         private Subject<bool> m_runInput = new Subject<bool>();
-        public IObservable<bool> RunInput => m_runInput;
+        public Observable<bool> RunInput => m_runInput;
 
         /// <summary>
         /// 점프 입력 이벤트 스트림
         /// </summary>
         private Subject<bool> m_jumpInput = new Subject<bool>();
-        public IObservable<bool> JumpInput => m_jumpInput;
+        public Observable<bool> JumpInput => m_jumpInput;
 
         /// <summary>
         /// 구르기 입력 이벤트 스트림
         /// </summary>
         private Subject<bool> m_rollInput = new Subject<bool>();
-        public IObservable<bool> RollInput => m_rollInput;
+        public Observable<bool> RollInput => m_rollInput;
 
         /// <summary>
         /// 자유시점 입력 이벤트 스트림
         /// </summary>
         private ReactiveProperty<bool> m_freeLookInput = new ReactiveProperty<bool>();
-        public IReactiveProperty<bool> FreeLookInput => m_freeLookInput;
+        public ReactiveProperty<bool> FreeLookInput => m_freeLookInput;
 
         /// <summary>
         /// 발사 입력 이벤트 스트림
         /// </summary>
         private Subject<bool> m_fireInput = new Subject<bool>();
-        public IObservable<bool> FireInput => m_fireInput;
+        public Observable<bool> FireInput => m_fireInput;
 
         /// <summary>
         /// 조준 입력 이벤트 스트림
         /// </summary>
         private Subject<bool> m_adsInput = new Subject<bool>();
-        public IObservable<bool> ADSInput => m_adsInput;
+        public Observable<bool> ADSInput => m_adsInput;
 
         #endregion
 
