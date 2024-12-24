@@ -7,7 +7,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using UniRx;
-
+using UnityEngine;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
@@ -58,10 +58,15 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         /// </summary>
         private async UniTaskVoid WaitOnEndState()
         {
+            float rollTime = 0.0f;
+
             while (!Player.AnimatorController.IsEndState("Roll", "Base Layer"))
             {
                 Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
                 Player.SetAimState(Player.UnaimedState);
+
+                rollTime += Time.deltaTime;
+                Player.CharacterMovement.Roll(rollTime);
 
                 await UniTask.WaitForEndOfFrame();
             }

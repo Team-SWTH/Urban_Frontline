@@ -11,21 +11,28 @@ using UnityEngine;
 
 using Unity.Cinemachine;
 using System;
+using UniRx;
 
 namespace UrbanFrontline.Client.Core.Actor.Camera
 {
     public class PlayerLookAtCamera : MonoBehaviour, ICameraController
     {
-        #region Fields
-
         [Header("Components")]
 
+        #region Components
         /// <summary>
         /// 카메라의 트랜스폼
         /// </summary>
         [Tooltip("카메라의 트랜스폼")]
         [SerializeField]
         private Transform m_cameraTransform;
+
+        /// <summary>
+        /// 시네머신 카메라 컴포넌트
+        /// </summary>
+        [Tooltip("시네머신 카메라 컴포넌트")]
+        [SerializeField]
+        private CinemachineCamera m_cinemachineCamera;
 
         /// <summary>
         /// 시네머신의 공전 컴포넌트
@@ -40,10 +47,38 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         [Tooltip("시네머신의 회전 컴포넌트")]
         [SerializeField]
         private CinemachineInputAxisController m_cinemachineAxisController;
+        #endregion
 
         [Space(10.0f)]
-        [Header("Offsets")]
+        [Header("FOV")]
 
+        #region FOV
+        /// <summary>
+        /// FOV 값
+        /// </summary>
+        [Tooltip("FOV 값")]
+        [SerializeField]
+        private float m_fieldOfView = 75.0f;
+
+        /// <summary>
+        /// FOV 가중치
+        /// </summary>
+        [Tooltip("FOV 가중치")]
+        [SerializeField]
+        private float m_fieldOfViewWeight = 1.0f;
+
+        /// <summary>
+        /// FOV Lerp Speed
+        /// </summary>
+        [Tooltip("FOV Lerp Speed")]
+        [SerializeField]
+        private float m_fieldOfViewLerpSpeed = 0.3f;
+        #endregion
+
+        [Space(10.0f)]
+        [Header("FreeLook")]
+
+        #region FreeLook
         /// <summary>
         /// FreeLook이 해제 될 경우 돌아갈 프리셋
         /// 기본 값으로 (0, 4)
@@ -68,8 +103,32 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         [Tooltip("FreeLook 애니메이션의 지속 시간")]
         [SerializeField]
         private float m_cancelAnimationDuration = 0.1f;
-
         #endregion
+
+
+        private void Awake()
+        {
+            SetFieldOfView(m_fieldOfView);
+            SetWeight(m_fieldOfViewWeight);
+        }
+
+        /// <summary>
+        /// FOV를 바꾸는 함수
+        /// </summary>
+        /// <param name="fieldOfViewWeight">가중치</param>
+        public void SetWeight(float fieldOfViewWeight)
+        {
+            m_fieldOfViewWeight = fieldOfViewWeight;
+        }
+
+        /// <summary>
+        /// 특정 FOV 값에 가중치를 곱해 보여줍니다.
+        /// </summary>
+        /// <param name="fieldOfView">원본 FOV 값</param>
+        public void SetFieldOfView(float fieldOfView)
+        {
+            m_fieldOfView = fieldOfView;
+        }
 
         /// <summary>
         ///  FreeLook (자유 시점) 활성화 함수
@@ -124,6 +183,10 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
             {
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, m_cameraTransform.eulerAngles.y, transform.eulerAngles.z);
             }
+
+            float destFOV = m_fieldOfView * m_fieldOfViewWeight;
+            float lerpFOV = Mathf.Lerp(m_cinemachineCamera.Lens.FieldOfView, destFOV, m_fieldOfViewLerpSpeed);
+            m_cinemachineCamera.Lens.FieldOfView = lerpFOV;
         }
     }
 }

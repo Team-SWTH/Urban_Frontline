@@ -17,7 +17,6 @@ using UrbanFrontline.Client.Core.Actor.State.Fire;
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.Camera;
-using Unity.Cinemachine;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -148,10 +147,7 @@ namespace UrbanFrontline.Client.Core.Actor
         /// <param name="state">전환할 상태</param>
         public void SetMoveState(IPlayerState state)
         {
-            if (state != null)
-            {
-                m_moveStateMachine.ChangeState(state);
-            }
+            m_moveStateMachine.ChangeState(state);
         }
 
         /// <summary>
@@ -160,10 +156,7 @@ namespace UrbanFrontline.Client.Core.Actor
         /// <param name="state">전환할 상태</param>
         public void SetAimState(IPlayerState state)
         {
-            if (state != null)
-            {
-                m_aimStateMachine.ChangeState(state);
-            }
+            m_aimStateMachine.ChangeState(state);
         }
     }
 }

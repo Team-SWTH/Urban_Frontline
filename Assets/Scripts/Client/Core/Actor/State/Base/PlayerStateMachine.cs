@@ -23,7 +23,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
         public void SetInitialState(IPlayerState initialState)
         {
             CurrentState = initialState;
-            CurrentState.Enter();
+            CurrentState?.Enter();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
         {
             CurrentState?.Exit();
             CurrentState = newState;
-            CurrentState.Enter();
+            CurrentState?.Enter();
         }
     }
 }
