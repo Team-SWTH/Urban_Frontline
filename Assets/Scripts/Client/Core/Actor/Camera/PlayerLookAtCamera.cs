@@ -11,7 +11,8 @@ using UnityEngine;
 
 using Unity.Cinemachine;
 using System;
-using UniRx;
+
+using R3;
 
 namespace UrbanFrontline.Client.Core.Actor.Camera
 {

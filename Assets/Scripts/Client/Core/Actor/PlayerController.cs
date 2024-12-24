@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-using UniRx;
+using R3;
 
 using UrbanFrontline.Client.Core.Input;
 
@@ -17,6 +17,7 @@ using UrbanFrontline.Client.Core.Actor.State.Fire;
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.Camera;
+using Cysharp.Threading.Tasks;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -128,7 +129,7 @@ namespace UrbanFrontline.Client.Core.Actor
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);
 
-            Observable.EveryLateUpdate()
+            Observable.EveryUpdate()
                       .Subscribe(_ =>
                       {
                           CameraController.UpdateCamera();
