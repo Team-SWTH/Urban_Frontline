@@ -56,6 +56,12 @@ namespace UrbanFrontline.Client.Core.Input
         private Subject<bool> m_adsInput = new Subject<bool>();
         public Observable<bool> ADSInput => m_adsInput;
 
+        /// <summary>
+        /// 장전 입력 이벤트 스트림
+        /// </summary>
+        private Subject<bool> m_reloadInput = new Subject<bool>();
+        public Observable<bool> ReloadInput => m_reloadInput;
+
         #endregion
 
         private void Start()
@@ -70,6 +76,7 @@ namespace UrbanFrontline.Client.Core.Input
                           UpdateFreeLookInput();
                           UpdateFireInput();
                           UpdateADSInput();
+                          UpdateReloadInput();
                       }).AddTo(this);
         }
 
@@ -149,6 +156,11 @@ namespace UrbanFrontline.Client.Core.Input
         private void UpdateADSInput()
         {
             m_adsInput.OnNext(InputManager.GetKey(KeyAction.ADS));
+        }
+
+        private void UpdateReloadInput()
+        {
+            m_reloadInput.OnNext(InputManager.GetKey(KeyAction.Reload));
         }
         #endregion
     }

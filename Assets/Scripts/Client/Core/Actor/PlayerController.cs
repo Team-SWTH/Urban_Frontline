@@ -17,7 +17,9 @@ using UrbanFrontline.Client.Core.Actor.State.Fire;
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.Camera;
+
 using Cysharp.Threading.Tasks;
+using UrbanFrontline.Client.Core.Actor.Weapon.Base;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -50,6 +52,11 @@ namespace UrbanFrontline.Client.Core.Actor
         /// 카메라와의 연동을 관리하는 인터페이스
         /// </summary>
         public ICameraController CameraController;
+
+        /// <summary>
+        /// 무기와의 연동을 관리하는 인터페이스
+        /// </summary>
+        public IWeaponController WeaponController;
         #endregion
 
         #region Move State Classes
@@ -94,6 +101,11 @@ namespace UrbanFrontline.Client.Core.Actor
         /// 조준 State
         /// </summary>
         public ADSState ADSState { get; private set; }
+
+        /// <summary>
+        /// 장전 State
+        /// </summary>
+        public ReloadState ReloadState { get; private set; }
         #endregion
 
         /// <summary>
@@ -112,6 +124,7 @@ namespace UrbanFrontline.Client.Core.Actor
             AnimatorController = GetComponent<IAnimatorController>();
             CharacterMovement = GetComponent<ICharacterMovement>();
             CameraController = GetComponent<ICameraController>();
+            WeaponController = GetComponentInChildren<IWeaponController>();
 
             m_moveStateMachine = new PlayerStateMachine();
             m_aimStateMachine = new PlayerStateMachine();
@@ -125,6 +138,7 @@ namespace UrbanFrontline.Client.Core.Actor
             UnaimedState = new UnaimedState(this, InputProvider);
             AimingState = new AimingState(this, InputProvider);
             ADSState = new ADSState(this, InputProvider);
+            ReloadState = new ReloadState(this);
 
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);
@@ -132,6 +146,8 @@ namespace UrbanFrontline.Client.Core.Actor
             Observable.EveryUpdate()
                       .Subscribe(_ =>
                       {
+                          m_moveStateMachine.Update();
+                          m_aimStateMachine.Update();
                           CameraController.UpdateCamera();
                       }).AddTo(this);
 

@@ -22,6 +22,11 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
         {
             IsEnable = false;
         }
+
+        public virtual void Update() 
+        {
+            // Nothing..
+        }
     }
 }
 

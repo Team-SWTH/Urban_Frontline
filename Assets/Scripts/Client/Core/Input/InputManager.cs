@@ -30,6 +30,7 @@ namespace UrbanFrontline.Client.Core.Input
             KeyCode.LeftAlt,
             KeyCode.Mouse0,
             KeyCode.Mouse1,
+            KeyCode.R
         };
 
         /// <summary>

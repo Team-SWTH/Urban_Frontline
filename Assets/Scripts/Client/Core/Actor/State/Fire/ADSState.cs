@@ -24,11 +24,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         private readonly PlayerController Player;
 
         /// <summary>
-        /// ADSState에서의 fov 가중치
-        /// </summary>
-        private readonly float fovWeight = 0.6f;
-
-        /// <summary>
         /// 생성자
         /// </summary>
         /// /// <param name="player">플레이어 컨트롤러</param>
@@ -43,6 +38,14 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                                   {
                                       Player.SetAimState(Player.UnaimedState);
                                   }).AddTo(player);
+
+            inputProvider.ReloadInput.Where(_ => IsEnable == true)
+                                     .Where(_ => Player.WeaponController.PossibleReload == true)
+                                     .Where(reload => reload == true)
+                                     .Subscribe(_ =>
+                                     {
+                                         Player.SetAimState(Player.ReloadState);
+                                     }).AddTo(player);
         }
 
         /// <summary>
@@ -52,9 +55,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             base.Enter();
 
-            Player.CameraController.SetWeight(fovWeight);
-
-            Player.AnimatorController.Play("Shot", "Upper Layer");
+            Player.CameraController.SetWeight(Player.WeaponController.ADSFovWeight);
             Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
         }
 
@@ -64,6 +65,35 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         public override void Exit()
         {
             base.Exit();
+        }
+
+        /// <summary>
+        /// AimingState 상태일 때 매 프레임 호출되는 함수
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            if (Player.WeaponController.ShouldReload)
+            {
+                Player.SetAimState(Player.ReloadState);
+            }
+
+            if (InputManager.GetKey(KeyAction.Fire))
+            {
+                if (Player.WeaponController.PossibleShot)
+                {
+                    Player.WeaponController.Shot();
+                    Player.AnimatorController.Play(Player.WeaponController.AttackStateName, "Upper Layer");
+                }
+            }
+            else
+            {
+                if (!Player.AnimatorController.IsInState(Player.WeaponController.ADSStateName, "Upper Layer"))
+                {
+                    Player.AnimatorController.Play(Player.WeaponController.ADSStateName, "Upper Layer");
+                }
+            }
         }
     }
 }

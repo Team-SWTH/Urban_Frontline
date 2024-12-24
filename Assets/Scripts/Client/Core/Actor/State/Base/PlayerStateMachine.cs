@@ -36,5 +36,13 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
             CurrentState = newState;
             CurrentState?.Enter();
         }
+
+        /// <summary>
+        /// 매 프레임 업데이트
+        /// </summary>
+        public void Update()
+        {
+            CurrentState.Update();
+        }
     }
 }

@@ -53,5 +53,10 @@ namespace UrbanFrontline.Client.Core.Input
         /// 조준 입력 이벤트 스트림
         /// </summary>
         Observable<bool> ADSInput { get; }
+
+        /// <summary>
+        /// 장전 입력 이벤트 스트림
+        /// </summary>
+        Observable<bool> ReloadInput { get; }
     }
 }
