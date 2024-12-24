@@ -34,20 +34,20 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
             Player = player;
 
             inputProvider.ADSInput.Where(_ => IsEnable == true)
-                                  .Where(_ => Player.WeaponController.PossibleADS)
+                                  .Where(_ => Player.WeaponController.PossibleADS == true)
                                   .Where(ads => ads == true)
                                   .Subscribe(_ =>
                                   {
                                       Player.SetAimState(Player.ADSState);
                                   }).AddTo(player);
 
-            inputProvider.FireInput.Where(_ => IsEnable == true)
-                                   .Where(_ => Player.AnimatorController.IsEndState(Player.WeaponController.AttackStateName, "Upper Layer") == true)
-                                   .Where(fire => fire == false)
-                                   .Subscribe(_ =>
-                                   {
-                                       Player.SetAimState(Player.UnaimedState);
-                                   }).AddTo(player);
+            inputProvider.ReloadInput.Where(_ => IsEnable == true)
+                                     .Where(_ => Player.WeaponController.PossibleReload == true)
+                                     .Where(reload => reload == true)
+                                     .Subscribe(_ =>
+                                     {
+                                         Player.SetAimState(Player.ReloadState);
+                                     }).AddTo(player);
         }
 
         /// <summary>
@@ -76,20 +76,23 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             base.Update();
 
-            if (Player.WeaponController.PossibleShot)
+            if (Player.WeaponController.ShouldReload)
             {
-                Player.WeaponController.Shot();
-                Player.AnimatorController.Play(Player.WeaponController.AttackStateName, "Upper Layer");
+                Player.SetAimState(Player.ReloadState);
             }
 
-            if (Player.WeaponController.CurrentAmmo == 0)
-            {
-                if (Player.WeaponController.MaxAmmo == 0)
-                {
-                    return;
-                }
 
-                Player.SetAimState(Player.UnaimedState);
+            if (Player.WeaponController.PossibleShot)
+            {
+                if (InputManager.GetKey(KeyAction.Fire))
+                {
+                    Player.WeaponController.Shot();
+                    Player.AnimatorController.Play(Player.WeaponController.AttackStateName, "Upper Layer");
+                }
+                else
+                {
+                    Player.SetAimState(Player.UnaimedState);
+                }
             }
         }
     }

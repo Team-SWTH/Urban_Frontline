@@ -101,6 +101,11 @@ namespace UrbanFrontline.Client.Core.Actor
         /// 조준 State
         /// </summary>
         public ADSState ADSState { get; private set; }
+
+        /// <summary>
+        /// 장전 State
+        /// </summary>
+        public ReloadState ReloadState { get; private set; }
         #endregion
 
         /// <summary>
@@ -133,6 +138,7 @@ namespace UrbanFrontline.Client.Core.Actor
             UnaimedState = new UnaimedState(this, InputProvider);
             AimingState = new AimingState(this, InputProvider);
             ADSState = new ADSState(this, InputProvider);
+            ReloadState = new ReloadState(this);
 
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);

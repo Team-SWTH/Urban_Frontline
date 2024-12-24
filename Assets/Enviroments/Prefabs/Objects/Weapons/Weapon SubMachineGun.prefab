@@ -49,11 +49,13 @@ MonoBehaviour:
   m_reloadStateName: Reload
   m_adsStateName: Shot
   m_fireFovWeight: 0.8
-  m_adsFovWeight: 1
-  m_possibleADS: 0
+  m_adsFovWeight: 0.8
+  m_possibleADS: 1
   m_possibleReload: 1
-  m_currentAmmo: 30
-  m_maxAmmo: 30
+  m_currentAmmo: 20
+  m_maxAmmo: 20
+  m_possibleShot: 1
+  m_intervalPerShot: 0.1
 --- !u!1 &4895473748344367657
 GameObject:
   m_ObjectHideFlags: 0

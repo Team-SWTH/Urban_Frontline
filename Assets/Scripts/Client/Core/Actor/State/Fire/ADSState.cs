@@ -38,6 +38,14 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                                   {
                                       Player.SetAimState(Player.UnaimedState);
                                   }).AddTo(player);
+
+            inputProvider.ReloadInput.Where(_ => IsEnable == true)
+                                     .Where(_ => Player.WeaponController.PossibleReload == true)
+                                     .Where(reload => reload == true)
+                                     .Subscribe(_ =>
+                                     {
+                                         Player.SetAimState(Player.ReloadState);
+                                     }).AddTo(player);
         }
 
         /// <summary>
@@ -66,6 +74,11 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             base.Update();
 
+            if (Player.WeaponController.ShouldReload)
+            {
+                Player.SetAimState(Player.ReloadState);
+            }
+
             if (InputManager.GetKey(KeyAction.Fire))
             {
                 if (Player.WeaponController.PossibleShot)
@@ -80,16 +93,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                 {
                     Player.AnimatorController.Play(Player.WeaponController.ADSStateName, "Upper Layer");
                 }
-            }
-
-            if (Player.WeaponController.CurrentAmmo == 0)
-            {
-                if (Player.WeaponController.MaxAmmo == 0)
-                {
-                    return;
-                }
-
-                Player.SetAimState(Player.UnaimedState);
             }
         }
     }

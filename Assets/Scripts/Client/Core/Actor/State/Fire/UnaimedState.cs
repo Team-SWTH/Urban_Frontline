@@ -32,7 +32,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             Player = player;
 
-            // 구르기 상태가 아니며, 총을 쏠 수 있을 경우 쏠 수 있다.
             inputProvider.FireInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
                                    .Where(_ => Player.WeaponController.PossibleShot == true)
@@ -42,16 +41,23 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                                        Player.SetAimState(Player.AimingState);
                                    }).AddTo(player);
 
-            // 구르기 상태가 아니며, 탄이 0발 이상인 경우 조준 할 수 있다.
             inputProvider.ADSInput.Where(_ => IsEnable == true)
                                   .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
-                                  .Where(_ => Player.WeaponController.CurrentAmmo != 0)
-                                  .Where(_ => Player.WeaponController.PossibleADS)
+                                  .Where(_ => Player.WeaponController.PossibleADS == true)
                                   .Where(ads => ads == true)
                                   .Subscribe(_ =>
                                   {
                                       Player.SetAimState(Player.ADSState);
                                   }).AddTo(player);
+
+            inputProvider.ReloadInput.Where(_ => IsEnable == true)
+                                     .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
+                                     .Where(_ => Player.WeaponController.PossibleReload == true)
+                                     .Where(reload => reload == true)
+                                     .Subscribe(_ =>
+                                     {
+                                         Player.SetAimState(Player.ReloadState);
+                                     }).AddTo(player);
         }
 
         /// <summary>
@@ -73,6 +79,16 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         public override void Exit()
         {
             base.Exit();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Player.WeaponController.ShouldReload)
+            {
+                Player.SetAimState(Player.ReloadState);
+            }
         }
     }
 }

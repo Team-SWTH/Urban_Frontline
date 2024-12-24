@@ -12,7 +12,7 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
 {
     public class Weapon : MonoBehaviour, IWeaponController
     {
-        #region Fields
+        #region Motion
         [Header("Motion")]
 
         /// <summary>
@@ -38,7 +38,9 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         [SerializeField]
         private string m_adsStateName;
         public string ADSStateName => m_adsStateName;
+        #endregion
 
+        #region FOV
         [Space(10.0f)]
         [Header("Field of View")]
         [Range(0.01f, 1.0f)]
@@ -50,7 +52,9 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         [SerializeField]
         private float m_adsFovWeight = 1.0f;
         public float ADSFovWeight => m_adsFovWeight;
+        #endregion
 
+        #region ADS
         [Space(10.0f)]
         [Header("ADS")]
 
@@ -61,7 +65,9 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         [SerializeField]
         private bool m_possibleADS = true;
         public bool PossibleADS => m_possibleADS;
+        #endregion
 
+        #region Reload
         [Space(10.0f)]
         [Header("Reload")]
 
@@ -76,20 +82,30 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         {
             get
             {
-                if (m_currentAmmo == m_maxAmmo || !m_possibleReload || m_isReloadInProgress)
+               if (m_maxAmmo == 0)
+               {
+                   return false;
+               }
+
+               return !(m_currentAmmo == m_maxAmmo || !m_possibleReload);
+            }
+        }
+
+        public bool ShouldReload
+        {
+            get
+            {
+                if (m_maxAmmo == 0)
                 {
                     return false;
                 }
 
-                return true;
+                return m_currentAmmo == 0;
             }
         }
+        #endregion
 
-        /// <summary>
-        /// 재장전 중인지를 반환
-        /// </summary>
-        private bool m_isReloadInProgress = false;
-
+        #region Ammo
         [Space(10.0f)]
         [Header("Ammo")]
 
@@ -99,7 +115,6 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         [Tooltip("현재 총알 갯수")]
         [SerializeField]
         private int m_currentAmmo = 0;
-        public int CurrentAmmo => m_currentAmmo;
 
         /// <summary>
         /// 장전 시 채워 줄 총알 갯수
@@ -109,7 +124,9 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         private int m_maxAmmo = 0;
 
         public int MaxAmmo => m_maxAmmo;
+        #endregion
 
+        #region Shot
         [Space(10.0f)]
         [Header("Shot")]
 
@@ -124,12 +141,12 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         {
             get
             {
-                if (m_currentAmmo <= 0 || !m_possibleShot)
+                if (m_currentAmmo > 0 || m_maxAmmo == 0)
                 {
-                    return false;
+                    return m_possibleShot;
                 }
 
-                return true;
+                return false;
             }
         }
 
@@ -139,7 +156,6 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         [Tooltip("발당 간격")]
         [SerializeField]
         private float m_intervalPerShot = 1f;
-
         #endregion
 
         /// <summary>
@@ -161,6 +177,7 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         private async UniTaskVoid StartShotCooldown()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(m_intervalPerShot));
+
             m_possibleShot = true;
         }
 
@@ -169,7 +186,7 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         /// </summary>
         public void Reload()
         {
-
+            m_currentAmmo = m_maxAmmo;
         }
     }
 }

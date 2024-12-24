@@ -48,10 +48,14 @@ MonoBehaviour:
   m_attackStateName: Swing
   m_reloadStateName: 
   m_adsStateName: 
+  m_fireFovWeight: 1
+  m_adsFovWeight: 1
   m_possibleADS: 0
   m_possibleReload: 0
   m_currentAmmo: 0
   m_maxAmmo: 0
+  m_possibleShot: 1
+  m_intervalPerShot: 0.8
 --- !u!1 &7894848630618936430
 GameObject:
   m_ObjectHideFlags: 0
