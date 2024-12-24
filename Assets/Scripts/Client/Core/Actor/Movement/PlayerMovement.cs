@@ -42,6 +42,13 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         private float m_jumpHeight = 5.0f;
 
         /// <summary>
+        /// 플레이어의 구르기 속도 커브
+        /// </summary>
+        [Tooltip("플레이어의 구르기 속도 커브")]
+        [SerializeField]
+        private AnimationCurve m_rollSpeedCurve;
+
+        /// <summary>
         /// 참조할 커스텀 캐릭터 컨트롤러
         /// </summary>
         private CustomPhysicsCharacterController m_controller;
@@ -100,9 +107,13 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// <summary>
         /// 구르기 로직
         /// </summary>
-        public void Roll()
+        /// <param name="time">구르고 난 뒤 흐른 시간</param>
+        public void Roll(float time)
         {
+            Vector3 rollDirection = transform.forward.normalized;
+            float rollSpeed = m_rollSpeedCurve.Evaluate(time);
 
+            m_controller.Move(rollSpeed * Time.deltaTime * rollDirection);
         }
 
         /// <summary>

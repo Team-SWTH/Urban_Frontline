@@ -45,7 +45,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
             base.Enter();
 
             Player.AnimatorController.Play("Jump", "Base Layer");
-            Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
 
             Player.CharacterMovement.Jump();
 
@@ -58,8 +57,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
-
-            Player.AnimatorController.Play("Land", "Base Layer");
         }
 
         public async UniTaskVoid WaitOnGround()

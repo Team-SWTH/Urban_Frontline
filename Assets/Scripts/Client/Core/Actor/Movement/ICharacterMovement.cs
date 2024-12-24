@@ -33,7 +33,8 @@ namespace UrbanFrontline.Client.Core.Actor.Movement
         /// <summary>
         /// 캐릭터 구르기 기능
         /// </summary>
-        void Roll();
+        /// <param name="time">구르고 난 뒤 흐른 시간</param>
+        void Roll(float time);
 
         /// <summary>
         /// 현재 땅인지를 체크하는 기능

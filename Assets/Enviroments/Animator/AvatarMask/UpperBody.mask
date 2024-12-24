@@ -26,11 +26,11 @@ AvatarMask:
   - m_Path: Bone_Body/Bone_Shoulder_L
     m_Weight: 1
   - m_Path: Bone_Body/Bone_Shoulder_L/Bone_Arm_L
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Bone_Body/Bone_Shoulder_L/Bone_Arm_L/Bone_Arm_L_end
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Bone_Body/Bone_Shoulder_L/Bone_Arm_L/LeftHand
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Bone_Body/Bone_Shoulder_R
     m_Weight: 1
   - m_Path: Bone_Body/Bone_Shoulder_R/Bone_Arm_R

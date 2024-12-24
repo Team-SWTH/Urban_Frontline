@@ -24,6 +24,11 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         private readonly PlayerController Player;
 
         /// <summary>
+        /// AimingState에서의 fov 가중치
+        /// </summary>
+        private readonly float fovWeight = 0.8f;
+
+        /// <summary>
         /// 생성자
         /// </summary>
         /// /// <param name="player">플레이어 컨트롤러</param>
@@ -43,7 +48,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                                    .Where(fire => fire == false)
                                    .Subscribe(_ =>
                                    {
-                                       Player.SetAimState(Player.IdleState);
+                                       Player.SetAimState(Player.UnaimedState);
                                    }).AddTo(player);
         }
 
@@ -53,6 +58,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         public override void Enter()
         {
             base.Enter();
+
+            Player.CameraController.SetWeight(fovWeight);
 
             Player.AnimatorController.Play("Shot", "Upper Layer");
             Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
