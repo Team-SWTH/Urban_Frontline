@@ -28,6 +28,7 @@ namespace UrbanFrontline.Client.Core.Input
         // 발사
         Fire,
         // 정조준
-        ADS
+        ADS,
+        Reload
     }
 }

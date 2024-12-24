@@ -20,5 +20,11 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
         /// ~ 상태에서 빠져 나갔을 때 실행 되는 초기화 함수
         /// </summary>
         void Exit();
+
+        /// <summary>
+        /// ~ 상태일 때 매 프레임 호출되는 함수
+        /// </summary>
+        void Update();
+
     }
 }

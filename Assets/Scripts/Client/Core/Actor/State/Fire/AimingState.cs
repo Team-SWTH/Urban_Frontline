@@ -10,6 +10,7 @@ using UnityEngine;
 
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace UrbanFrontline.Client.Core.Actor.State.Fire
 {
@@ -24,11 +25,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         private readonly PlayerController Player;
 
         /// <summary>
-        /// AimingState에서의 fov 가중치
-        /// </summary>
-        private readonly float fovWeight = 0.8f;
-
-        /// <summary>
         /// 생성자
         /// </summary>
         /// /// <param name="player">플레이어 컨트롤러</param>
@@ -38,6 +34,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
             Player = player;
 
             inputProvider.ADSInput.Where(_ => IsEnable == true)
+                                  .Where(_ => Player.WeaponController.PossibleADS)
                                   .Where(ads => ads == true)
                                   .Subscribe(_ =>
                                   {
@@ -45,6 +42,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
                                   }).AddTo(player);
 
             inputProvider.FireInput.Where(_ => IsEnable == true)
+                                   .Where(_ => Player.AnimatorController.IsEndState(Player.WeaponController.AttackStateName, "Upper Layer") == true)
                                    .Where(fire => fire == false)
                                    .Subscribe(_ =>
                                    {
@@ -59,9 +57,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             base.Enter();
 
-            Player.CameraController.SetWeight(fovWeight);
-
-            Player.AnimatorController.Play("Shot", "Upper Layer");
+            Player.CameraController.SetWeight(Player.WeaponController.FireFovWeight);
             Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
         }
 
@@ -71,6 +67,30 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         public override void Exit()
         {
             base.Exit();
+        }
+
+        /// <summary>
+        /// AimingState 상태일 때 매 프레임 호출되는 함수
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            if (Player.WeaponController.PossibleShot)
+            {
+                Player.WeaponController.Shot();
+                Player.AnimatorController.Play(Player.WeaponController.AttackStateName, "Upper Layer");
+            }
+
+            if (Player.WeaponController.CurrentAmmo == 0)
+            {
+                if (Player.WeaponController.MaxAmmo == 0)
+                {
+                    return;
+                }
+
+                Player.SetAimState(Player.UnaimedState);
+            }
         }
     }
 }

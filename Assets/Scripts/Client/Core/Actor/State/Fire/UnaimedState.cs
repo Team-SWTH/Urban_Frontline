@@ -24,11 +24,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         private readonly PlayerController Player;
 
         /// <summary>
-        /// UnaimedState에서의 fov 가중치
-        /// </summary>
-        private readonly float fovWeight = 1.0f;
-
-        /// <summary>
         /// 생성자
         /// </summary>
         /// /// <param name="player">플레이어 컨트롤러</param>
@@ -37,21 +32,26 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             Player = player;
 
-            inputProvider.ADSInput.Where(_ => IsEnable == true)
-                                  .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
-                                  .Where(ads => ads == true)
-                                  .Subscribe(_ =>
-                                  {
-                                      Player.SetAimState(Player.ADSState);
-                                  }).AddTo(player);
-
+            // 구르기 상태가 아니며, 총을 쏠 수 있을 경우 쏠 수 있다.
             inputProvider.FireInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
+                                   .Where(_ => Player.WeaponController.PossibleShot == true)
                                    .Where(fire => fire == true)
                                    .Subscribe(_ =>
                                    {
                                        Player.SetAimState(Player.AimingState);
                                    }).AddTo(player);
+
+            // 구르기 상태가 아니며, 탄이 0발 이상인 경우 조준 할 수 있다.
+            inputProvider.ADSInput.Where(_ => IsEnable == true)
+                                  .Where(_ => Player.AnimatorController.IsInState("Roll", "Base Layer") == false)
+                                  .Where(_ => Player.WeaponController.CurrentAmmo != 0)
+                                  .Where(_ => Player.WeaponController.PossibleADS)
+                                  .Where(ads => ads == true)
+                                  .Subscribe(_ =>
+                                  {
+                                      Player.SetAimState(Player.ADSState);
+                                  }).AddTo(player);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
         {
             base.Enter();
 
-            Player.CameraController.SetWeight(fovWeight);
+            Player.CameraController.SetWeight(1.0f);
 
             Player.AnimatorController.Play("Idle", "Upper Layer");
             Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
