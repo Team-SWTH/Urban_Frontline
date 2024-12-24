@@ -13,6 +13,18 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
     public interface ICameraController
     {
         /// <summary>
+        /// 특정 FOV 값에 가중치를 곱해 보여줍니다.
+        /// </summary>
+        /// <param name="fieldOfViewWeight">가중치</param>
+        void SetWeight(float fieldOfViewWeight);
+
+        /// <summary>
+        /// FOV를 바꾸는 함수
+        /// </summary>
+        /// <param name="fieldOfView">바꿀 FOV 값</param>
+        void SetFieldOfView(float fieldOfView);
+
+        /// <summary>
         /// FreeLook (자유 시점) 활성화 함수
         /// </summary>
         /// <param name="enable">자유시점 활성화 여부</param>

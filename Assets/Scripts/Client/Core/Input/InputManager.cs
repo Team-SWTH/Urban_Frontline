@@ -26,7 +26,7 @@ namespace UrbanFrontline.Client.Core.Input
             KeyCode.D,
             KeyCode.LeftShift,
             KeyCode.Space,
-            KeyCode.Z,
+            KeyCode.C,
             KeyCode.LeftAlt,
             KeyCode.Mouse0,
             KeyCode.Mouse1,

@@ -70,7 +70,6 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
             base.Enter();
 
             Player.AnimatorController.Play("Walk", "Base Layer");
-            Player.AnimatorController.SetLayerWeight(1.0f, "Upper Layer");
         }
 
         /// <summary>
