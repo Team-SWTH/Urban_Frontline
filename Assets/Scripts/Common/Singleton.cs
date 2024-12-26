@@ -9,7 +9,7 @@ using System;
 namespace UrbanFrontline.Common
 {
     /// <summary>  
-    /// 싱글톤 패턴을 구현합니다.  
+    /// Singleton 패턴을 구현합니다.  
     /// </summary>  
     /// <typeparam name="TInstance">싱글톤 클래스 타입</typeparam>  
     public abstract class Singleton<TInstance> where TInstance : class
