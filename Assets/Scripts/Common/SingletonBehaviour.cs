@@ -9,8 +9,7 @@ using UnityEngine;
 namespace UrbanFrontline.Common
 {
     /// <summary>
-    /// 싱글턴 패턴을 구현한 정적 클래스입니다.
-    /// 특정 MonoBehaviour 타입에 대한 전역적으로 접근 가능한 인스턴스를 제공합니다.
+    /// Singleton 패턴의 MonoBehaviour 클래스.
     /// </summary>
     /// <typeparam name="TInstance">MonoBehaviour를 상속하는 타입</typeparam>
     public abstract class SingletonBehaviour<TInstance> : MonoBehaviour where TInstance : MonoBehaviour
