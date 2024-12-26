@@ -1,6 +1,6 @@
 // ========================================
-// File: SubMachineGun.cs
-// Created: 2024-12-24 13:37:33
+// File: Grenade.cs
+// Created: 2024-12-26 10:12:38
 // Author: leeinhwan0421
 // ========================================
 
@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace UrbanFrontline.Client.Core.Actor.Weapon
 {
-    public class SubMachineGun : Base.Weapon
+    public class Grenade : Base.Weapon
     {
 
     }

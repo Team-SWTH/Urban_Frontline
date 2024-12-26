@@ -164,7 +164,7 @@ namespace UrbanFrontline.Client.Core.Actor.Weapon.Base
         public void Shot()
         {
             m_possibleShot = false;
-            m_currentAmmo--;
+            m_currentAmmo = Mathf.Max(0, m_currentAmmo - 1);
 
             StartShotCooldown().Forget();
 

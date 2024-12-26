@@ -78,7 +78,10 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
 
             if (Player.WeaponController.ShouldReload)
             {
-                Player.SetAimState(Player.ReloadState);
+                if (Player.AnimatorController.IsEndState(Player.WeaponController.AttackStateName, "Upper Layer"))
+                {
+                    Player.SetAimState(Player.ReloadState);
+                }
             }
 
 

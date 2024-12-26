@@ -70,7 +70,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
             Player.CameraController.SetWeight(1.0f);
 
             Player.AnimatorController.Play("Idle", "Upper Layer");
-            Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
+            Player.AnimatorController.SetLayerWeight(0.5f, "Upper Layer");
         }
 
         /// <summary>

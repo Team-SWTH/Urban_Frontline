@@ -43,16 +43,11 @@ namespace UrbanFrontline.Client.Core.Actor.Animation
         /// <param name="layerName">레이어 이름</param>
         public void Play(string stateName, string layerName)
         {
+            m_animator.Update(0);
+
             int layerIndex = m_animator.GetLayerIndex(layerName);
 
-            if (IsInState(stateName, layerName))
-            {
-                m_animator.Play(stateName, layerIndex);
-            }
-            else
-            {
-                m_animator.CrossFade(stateName, m_transitionDuration, layerIndex);
-            }
+            m_animator.CrossFade(stateName, m_transitionDuration, layerIndex, 0);
         }
 
         /// <summary>
