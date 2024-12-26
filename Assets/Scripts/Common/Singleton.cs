@@ -1,19 +1,18 @@
 // ========================================
 // File: Singleton.cs
-// Created: 2024-12-19 18:32:38
+// Created: 2024-12-27 05:15:58
 // Author: LHBM04
 // ========================================
 
-using UnityEngine;
+using System;
 
 namespace UrbanFrontline.Common
 {
-    /// <summary>
-    /// 싱글턴 패턴을 구현한 정적 클래스입니다.
-    /// 특정 MonoBehaviour 타입에 대한 전역적으로 접근 가능한 인스턴스를 제공합니다.
-    /// </summary>
-    /// <typeparam name="TInstance">MonoBehaviour를 상속하는 타입</typeparam>
-    public abstract class Singleton<TInstance> : MonoBehaviour where TInstance : MonoBehaviour
+    /// <summary>  
+    /// Singleton 패턴을 구현합니다.  
+    /// </summary>  
+    /// <typeparam name="TInstance">싱글톤 클래스 타입</typeparam>  
+    public abstract class Singleton<TInstance> where TInstance : class
     {
         /// <summary>
         /// 인스턴스.
@@ -23,12 +22,7 @@ namespace UrbanFrontline.Common
         /// <summary>
         /// Thread-Safe를 위한 Lock 객체.
         /// </summary>
-        private static object m_lock = new();
-
-        /// <summary>
-        /// 현재 어플리케이션이 종료되었는가에 대한 여부.
-        /// </summary>
-        private static bool m_isApplicationQuit = false;
+        private static object m_lock = new object();
 
         /// <summary>
         /// 싱글턴 인스턴스를 가져옵니다.
@@ -37,43 +31,16 @@ namespace UrbanFrontline.Common
         {
             get
             {
-                if (m_isApplicationQuit)
-                {
-                    return null;
-                }
-
                 lock (m_lock)
                 {
-                    if (!m_instance)
+                    if (m_instance == null)
                     {
-                        m_instance = FindAnyObjectByType<TInstance>();
-                        if (!m_instance)
-                        {
-                            var findObject = GameObject.Find(typeof(TInstance).ToString());
-                            if (!findObject)
-                            {
-                                findObject = new GameObject(typeof(TInstance).ToString());
-                            }
-
-                            m_instance = findObject.AddComponent<TInstance>();
-                        }
-
-                        DontDestroyOnLoad(m_instance);
+                        m_instance ??= Activator.CreateInstance(typeof(TInstance), true) as TInstance;
                     }
 
                     return m_instance;
                 }
             }
-        }
-
-        protected virtual void OnApplicationQuit()
-        {
-            m_isApplicationQuit = true;
-        }
-
-        public virtual void OnDestroy()
-        {
-            m_isApplicationQuit = true;
         }
     }
 }
