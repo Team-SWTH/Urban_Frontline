@@ -1,53 +1,102 @@
 // ========================================
 // File: ServerHandler.cs
-// Created: 2024-12-20 20:50:31
+// Created: 2024-12-27 05:35:29
 // Author: LHBM04
 // ========================================
 
+using Cysharp.Threading.Tasks;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UrbanFrontline.Server.Core.Utilities;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
     /// <summary>
-    /// UDP 방식의 서버를 관리합니다.
+    /// 
     /// </summary>
-    [Serializable]
-    public sealed class ServerHandler
+    public sealed class ServerHandler : MonoBehaviour
     {
-        private static readonly int Port = 11000;
+        /// <summary>
+        /// 입장할 수 있는 클라이언트의 수.
+        /// </summary>
+        [Tooltip("입장할 수 있는 클라이언트의 수.")]
+        [SerializeField]
+        private int m_registerCount;
 
-        public async Task StartServerAsync()
+        /// <summary>
+        /// 
+        /// </summary>
+        [Tooltip("")]
+        [SerializeField]
+        private int m_backlogCount;
+
+        private bool m_isRunning;
+
+        /// <summary>
+        /// 통신을 위한 TCP 프로토콜 방식의 소켓.
+        /// </summary>
+        private Socket m_socket;
+
+        public bool Initialize(IPEndPoint endPoint)
         {
-            using (UdpClient udpServer = new UdpClient(Port))
+            try
             {
-                Debug.Log($"UDP 서버 시작, 포트: {Port}");
+                // 1. 소켓 생성
+                m_socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                m_socket.Bind(endPoint);
+                m_socket.Listen(m_backlogCount);
+
+                m_isRunning = true;
+
+                return true;
+            }
+            catch (Exception e)
+            {
+#if UNITY_SERVER || UNITY_EDITOR
+                Debug.LogError(e.Message);
+#endif
+                return false;
+            }
+        }
+
+        public async void Routine()
+        {
+            try
+            {
                 while (true)
                 {
-                    try
-                    {
-                        // 비동기적으로 데이터 수신
-                        var result = await udpServer.ReceiveAsync();
-                        string receivedData = Encoding.UTF8.GetString(result.Buffer);
-                        Debug.Log($"[{result.RemoteEndPoint}]로부터 수신한 데이터: {receivedData}");
+                    // 서버가 멈추면 루프를 빠져나온다.
+                    // 왠지는 모르겠는데 while(m_isRunning) <-- 이렇게 작성하면 반드시 SocketException이 발생한다.
+                    if (!m_isRunning) 
+                    { 
+                        break;
+                    }
 
-                        // 비동기적으로 응답
-                        string response = $"서버 응답: {receivedData}";
-                        byte[] responseData = Encoding.UTF8.GetBytes(response);
-                        await udpServer.SendAsync(responseData, responseData.Length, result.RemoteEndPoint);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"오류 발생: {ex.Message}");
-                        udpServer.Close();
-                    }
+          
+                    Socket clientSocket = await m_socket.AcceptAsync();
+                    // 1. 처음 보는 소캣인가? 그렇다면 새로운 세션을 생성한다.
+                    // if (!FindFirstObjectByType<SessionHandler>().Has(clientSocket.AddressFamily))
+                    // {
+                    //     Session newSession = new Session(clientSocket);
+                    //     continue;    
+                    // }
+                    // 2. 이미 알고 있는 소켓인가? 그렇다면 세션을 업데이트한다.
+                    // 현재 받은 소켓만 주고, 데이터 처리는 세션에서 한다.
+                    // FindAnyObjectByType<SessionHandler>().Get(clientSocket).Update();
+                    clientSocket.Close();
                 }
             }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
+
+        public void Release()
+        {
+            m_socket.Close();
         }
     }
 }

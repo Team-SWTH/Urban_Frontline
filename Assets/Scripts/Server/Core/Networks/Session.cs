@@ -1,102 +1,64 @@
 // ========================================
 // File: Session.cs
-// Created: 2024-12-20 03:18:29
+// Created: 2024-12-27 06:55:34
 // Author: LHBM04
 // ========================================
 
 using System;
-using System.Net.Sockets;
 using UnityEngine;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
     /// <summary>
-    /// 클라이언트와 서버 간의 세션 정보를 관리합니다.
+    /// 세션.
+    /// 세션이 곧 클라이언트의 핸들링을 담당할 것.
     /// </summary>
     [Serializable]
     public class Session : IEquatable<Session>
     {
-        /// <summary>
-        /// 해당 세션의 주인(클라이언트).
-        /// </summary>
         [SerializeField]
-        private Client m_owner;
+        private string m_id;
+        public Guid Id { get { return Guid.Parse(m_id); } }
 
-        /// <summary>
-        /// 해당 세션의 아이디.
-        /// </summary>
         [SerializeField]
-        private string m_id; 
+        private Client m_client;
 
-        /// <summary>
-        /// 해당 세션이 시작된 시간.
-        /// </summary>
-        public DateTime ConnectedTime 
-        { 
-            get; 
-        }
+        [SerializeField]
+        private string m_connectedTime;
+        public DateTime ConnectedTime { get { return DateTime.Parse(m_connectedTime); } }
 
-        /// <summary>
-        /// 마지막으로 해당 세션이 활성화된 시점.
-        /// </summary>
-        public DateTime LastActiveTime 
-        { 
-            get; 
-            private set; 
-        }
+        [SerializeField]
+        private string m_lastActiveTime;
+        public DateTime LastActiveTime { get { return DateTime.Parse(m_lastActiveTime); } }
 
-        public Session(Client client)
+        public Session(Guid id, Client client)
         {
-            m_owner = client;
-            m_id = Guid.NewGuid().ToString();
-            ConnectedTime = DateTime.Now;
-            LastActiveTime = DateTime.Now;
+            m_id = id.ToString();
+            m_client = client;
+            m_connectedTime = DateTime.Now.ToString();
+            m_lastActiveTime = DateTime.Now.ToString();
         }
 
-        /// <summary>
-        /// 세션의 활성 상태를 업데이트합니다.
-        /// </summary>
+        public void Connect()
+        {
+
+        }
+
         public void Update()
         {
-            LastActiveTime = DateTime.Now;
+            // TODO: 데이터(패킷) 처리 로직 작성.
+
+            // 세션의 마지막 활동 시간을 갱신한다.
+            m_lastActiveTime = DateTime.Now.ToString();
         }
 
-        /// <summary>
-        /// 세션이 유휴 상태인지 확인합니다.
-        /// </summary>
-        public bool IsTimedOut(TimeSpan timeout)
+        public void Disconnect()
         {
-            return DateTime.Now - LastActiveTime > timeout;
         }
 
-        /// <summary>
-        /// 두 Session 객체가 동일한지 여부를 확인합니다.
-        /// </summary>
-        /// <param name="other">비교할 다른 Session 객체</param>
-        /// <returns>동일하면 true, 그렇지 않으면 false</returns>
         public bool Equals(Session other)
         {
-            return other is null ? false : m_id == other.m_id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Session session ? Equals(session) : false;
-        }
-
-        public override int GetHashCode()
-        {
-            return m_id.GetHashCode();
-        }
-
-        public static bool operator ==(Session left, Session right)
-        {
-            return left is null ? right is null : left.Equals(right);
-        }
-
-        public static bool operator !=(Session left, Session right)
-        {
-            return !(left == right);
+            throw new NotImplementedException();
         }
     }
 }
