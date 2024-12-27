@@ -4,19 +4,19 @@
 // Author: leeinhwan0421
 // ========================================
 
+using System;
 using System.Threading;
+using System.Collections.Generic;
+
 using Cysharp.Threading.Tasks;
 
 using UnityEngine;
 
 using Unity.Cinemachine;
-using System;
-
-using R3;
 
 namespace UrbanFrontline.Client.Core.Actor.Camera
 {
-    public class PlayerLookAtCamera : MonoBehaviour, ICameraController
+    public class PlayerCameraController : MonoBehaviour, ICameraController
     {
         [Header("Components")]
 
@@ -106,6 +106,24 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         private float m_cancelAnimationDuration = 0.1f;
         #endregion
 
+        [Space(10.0f)]
+        [Header("Targets")]
+
+        #region Targets
+        /// <summary>
+        /// 플레이어의 Transform 컴포넌트
+        /// </summary>
+        [Tooltip("플레이어의 Transform 컴포넌트")]
+        [SerializeField]
+        private Transform m_playerTransform;
+
+        /// <summary>
+        /// 총의 Transform 속성
+        /// </summary>
+        [Tooltip("오른손의 Transform 컴포넌트")]
+        [SerializeField]
+        private Transform m_rightHandTransform;
+        #endregion
 
         private void Awake()
         {
@@ -182,7 +200,8 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         {
             if (!m_isFreeLookEnabled)
             {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, m_cameraTransform.eulerAngles.y, transform.eulerAngles.z);
+                m_playerTransform.eulerAngles = new Vector3(m_playerTransform.eulerAngles.x, m_cameraTransform.eulerAngles.y, m_playerTransform.eulerAngles.z);
+                m_rightHandTransform.rotation = Quaternion.LookRotation(m_cameraTransform.forward) * Quaternion.Euler(0, -90, 0);
             }
 
             float destFOV = m_fieldOfView * m_fieldOfViewWeight;

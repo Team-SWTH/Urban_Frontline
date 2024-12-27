@@ -120,6 +120,8 @@ MonoBehaviour:
   m_fieldOfViewLerpSpeed: 0.3
   m_desinationOrbitalOffset: {x: 0, y: 4}
   m_cancelAnimationDuration: 0.15
+  m_playerTransform: {fileID: 159627370460597206}
+  m_rightHandTransform: {fileID: 5230993939170605060}
 --- !u!114 &6977915514715663547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,7 +493,7 @@ Transform:
   m_GameObject: {fileID: 8375808765592196825}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00055252184, y: 2.287994e-16, z: 1.2641667e-19, w: 0.9999999}
-  m_LocalPosition: {x: -4.8731256, y: 2.992407, z: -6.5170393}
+  m_LocalPosition: {x: 9.43, y: 2.9924068, z: -8.06051}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
