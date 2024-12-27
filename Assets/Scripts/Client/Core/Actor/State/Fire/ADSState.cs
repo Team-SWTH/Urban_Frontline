@@ -92,7 +92,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Fire
             }
             else
             {
-                if (!Player.AnimatorController.IsInState(Player.WeaponController.ADSStateName, "Upper Layer"))
+                if (!Player.AnimatorController.IsInState(Player.WeaponController.AttackStateName, "Upper Layer"))
                 {
                     Player.AnimatorController.Play(Player.WeaponController.ADSStateName, "Upper Layer");
                 }

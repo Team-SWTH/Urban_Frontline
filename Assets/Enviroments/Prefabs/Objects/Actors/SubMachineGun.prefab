@@ -549,6 +549,8 @@ MonoBehaviour:
   m_fieldOfViewLerpSpeed: 0.3
   m_desinationOrbitalOffset: {x: 0, y: 4}
   m_cancelAnimationDuration: 0.1
+  m_playerTransform: {fileID: 4973398925055107550}
+  m_rightHandTransform: {fileID: 1064885126238488808}
 --- !u!114 &1536153921003187379
 MonoBehaviour:
   m_ObjectHideFlags: 0

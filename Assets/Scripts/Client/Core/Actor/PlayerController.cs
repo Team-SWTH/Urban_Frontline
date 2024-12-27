@@ -29,7 +29,7 @@ namespace UrbanFrontline.Client.Core.Actor
     [RequireComponent(typeof(InputProvider))]
     [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(PlayerMovement))]
-    [RequireComponent(typeof(PlayerLookAtCamera))]
+    [RequireComponent(typeof(PlayerCameraController))]
     public class PlayerController : MonoBehaviour
     {
         #region Interfaces
