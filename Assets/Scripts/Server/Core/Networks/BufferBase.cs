@@ -14,13 +14,22 @@ namespace UrbanFrontline.Server.Core.Networks
     [Serializable]
     public abstract class BufferBase
     {
+        /// <summary>
+        /// 데이터를 저장할 버퍼.
+        /// </summary>
         private byte[] m_buffer;
 
+        /// <summary>
+        /// 저장된 데이터.
+        /// </summary>
         public ArraySegment<byte> Data
         {
             get { return m_buffer; }
         }
-
+        
+        /// <summary>
+        /// 저장된 데이터의 길이.
+        /// </summary>
         public int Length
         {
             get { return m_buffer.Length; }
