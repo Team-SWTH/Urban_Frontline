@@ -5,7 +5,8 @@
 // ========================================
 
 using System;
-using UnityEngine;
+using System.Net;
+using System.Net.Sockets;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
@@ -13,47 +14,92 @@ namespace UrbanFrontline.Server.Core.Networks
     /// 세션.
     /// 세션이 곧 클라이언트의 핸들링을 담당할 것.
     /// </summary>
-    [Serializable]
     public class Session : IEquatable<Session>
     {
-        [SerializeField]
-        private string m_id;
-        public Guid Id { get { return Guid.Parse(m_id); } }
-
-        [SerializeField]
-        private Client m_client;
-
-        [SerializeField]
-        private string m_connectedTime;
-        public DateTime ConnectedTime { get { return DateTime.Parse(m_connectedTime); } }
-
-        [SerializeField]
-        private string m_lastActiveTime;
-        public DateTime LastActiveTime { get { return DateTime.Parse(m_lastActiveTime); } }
-
-        public Session(Guid id, Client client)
+        /// <summary>
+        /// 해당 세션의 ID.
+        /// </summary>
+        public Guid ID
         {
-            m_id = id.ToString();
-            m_client = client;
-            m_connectedTime = DateTime.Now.ToString();
-            m_lastActiveTime = DateTime.Now.ToString();
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 해당 세션의 연결 여부.
+        /// </summary>
+        public bool IsConnected
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 해당 세션의 소켓.
+        /// </summary>
+        public Socket Socket
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 해당 세션의 IP 주소.
+        /// </summary>
+        public IPEndPoint EndPoint 
+        { 
+            get; 
+            private set; 
+        }
+
+        public DateTime ConnectedTime
+        {
+            get;
+            private set;
+        }
+
+        public DateTime LastActiveTime
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 세션 연결 이벤트.
+        /// </summary>
+        public delegate void ConnectEvent();
+
+        public ConnectEvent OnConnected
+        {
+            get;
+            private set;
+        }
+
+        public ConnectEvent OnDisconnected
+        {
+            get;
+            private set;
         }
 
         public void Connect()
         {
-
+            IsConnected = true;
+            ConnectedTime = DateTime.Now;
+            LastActiveTime = DateTime.Now;
+            OnConnected?.Invoke();
         }
 
-        public void Update()
+        public void NotifyHandlerConnect(SessionHandler handler)
         {
-            // TODO: 데이터(패킷) 처리 로직 작성.
-
-            // 세션의 마지막 활동 시간을 갱신한다.
-            m_lastActiveTime = DateTime.Now.ToString();
+            IsConnected = true;
+            
+            
         }
 
         public void Disconnect()
         {
+            IsConnected = false;
+            OnDisconnected?.Invoke();
         }
 
         public bool Equals(Session other)
