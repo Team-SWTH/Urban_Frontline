@@ -6,11 +6,8 @@
 
 using R3;
 
-using UnityEngine;
-
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace UrbanFrontline.Client.Core.Actor.State.Fire
 {

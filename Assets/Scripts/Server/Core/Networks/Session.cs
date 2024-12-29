@@ -17,52 +17,13 @@ namespace UrbanFrontline.Server.Core.Networks
     public class Session : IEquatable<Session>
     {
         /// <summary>
-        /// 해당 세션의 ID.
-        /// </summary>
-        public Guid ID
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
         /// 해당 세션의 연결 여부.
         /// </summary>
-        public bool IsConnected
-        {
-            get;
-            private set;
-        }
+        public bool IsConnected;
 
-        /// <summary>
-        /// 해당 세션의 소켓.
-        /// </summary>
-        public Socket Socket
-        {
-            get;
-            private set;
-        }
+        public DateTime ConnectedTime;
 
-        /// <summary>
-        /// 해당 세션의 IP 주소.
-        /// </summary>
-        public IPEndPoint EndPoint 
-        { 
-            get; 
-            private set; 
-        }
-
-        public DateTime ConnectedTime
-        {
-            get;
-            private set;
-        }
-
-        public DateTime LastActiveTime
-        {
-            get;
-            private set;
-        }
+        public DateTime LastActiveTime;
 
         /// <summary>
         /// 세션 연결 이벤트.

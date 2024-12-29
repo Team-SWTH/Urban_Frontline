@@ -4,7 +4,10 @@
 // Author: LHBM04
 // ========================================
 
+using System;
+
 namespace UrbanFrontline.Server.Core.Networks
 {
+    [Serializable]
     public delegate void ServerEvent(ServerBase server);
 }
