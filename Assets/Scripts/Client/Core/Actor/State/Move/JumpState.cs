@@ -6,7 +6,7 @@
 
 using Cysharp.Threading.Tasks;
 using System;
-using R3;
+using UniRx;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 

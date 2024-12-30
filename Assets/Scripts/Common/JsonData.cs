@@ -25,8 +25,8 @@ namespace UrbanFrontline.Common
         /// </summary>
         public object this[string key]
         {
-            get => GetValue<object>(key);
-            set => SetValue(key, value);
+            get { return GetValue<object>(key); }
+            set { SetValue(key, value); }
         }
 
         /// <summary>
