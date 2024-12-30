@@ -4,12 +4,14 @@
 // Author: LHBM04
 // ========================================
 
+using System;
 using System.Net.Sockets;
 using UnityEngine;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
-    public class ServerBase : MonoBehaviour
+    [Serializable]
+    public struct ServerBase
     {
         /// <summary>
         /// 
@@ -46,18 +48,6 @@ namespace UrbanFrontline.Server.Core.Networks
         /// </summary>
         [Tooltip("")]
         public int backlogCount;
-
-        protected virtual void Reset()
-        {
-            socketType = SocketType.Stream;
-            protocolType = ProtocolType.Tcp;
-
-            ipAddress = "127.0.0.1";
-            port = 8080;
-
-            tickRate = 60;
-            backlogCount = 100;
-        }
     }
 }
 

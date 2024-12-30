@@ -33,7 +33,7 @@ namespace UrbanFrontline.Server.Core.Networks
         public event ServerEvent OnServerStarted;
         public event ServerEvent OnServerStopped;
 
-        public virtual void Start()
+        public virtual void StartServer()
         {
             try
             {
@@ -56,11 +56,11 @@ namespace UrbanFrontline.Server.Core.Networks
             catch (Exception ex)
             {
                 Utilities.Logger.LogAssertion($"서버를 열 수 없었습니다!", ex);
-                Stop();
+                StopServer();
             }
         }
 
-        public virtual void Stop()
+        public virtual void StopServer()
         {
             if (!m_isRunning)
             {
@@ -107,17 +107,17 @@ namespace UrbanFrontline.Server.Core.Networks
                 Utilities.Logger.Log(temp);
             }
 
-            Stop();
+            StopServer();
         }
 
         private void OnDestroy()
         {
-            Stop();
+            StopServer();
         }
 
         private void OnApplicationQuit()
         {
-            Stop();
+            StopServer();
         }
     }
 }
