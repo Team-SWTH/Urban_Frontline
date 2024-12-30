@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using UnityEngine;
+using UrbanFrontline.Server.Core.Clients;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
@@ -22,10 +23,5 @@ namespace UrbanFrontline.Server.Core.Networks
         /// 세션 목록.
         /// </summary>
         private ConcurrentDictionary<Guid, Session> m_sessions;
-
-        private void Awake()
-        {
-            m_sessions = new ConcurrentDictionary<Guid, Session>();
-        }
     }
 }

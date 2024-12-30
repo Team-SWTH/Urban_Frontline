@@ -15,5 +15,17 @@ namespace UrbanFrontline.Server.Core.Clients
         public string ipAddress;
 
         public string port;
+
+        public Client(string ipAddress, string port)
+        {
+            this.ipAddress = ipAddress;
+            this.port = port;
+        }
+
+        public Client(string ipAddress, ushort port)
+        {
+            this.ipAddress = ipAddress;
+            this.port = port.ToString();
+        }
     }
 }
