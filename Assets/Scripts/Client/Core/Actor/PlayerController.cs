@@ -4,22 +4,17 @@
 // Author: leeinhwan0421
 // ========================================
 
-using UnityEngine;
-
-using R3;
-
-using UrbanFrontline.Client.Core.Input;
-
-using UrbanFrontline.Client.Core.Actor.State.Base;
-using UrbanFrontline.Client.Core.Actor.State.Move;
-using UrbanFrontline.Client.Core.Actor.State.Fire;
-
-using UrbanFrontline.Client.Core.Actor.Animation;
-using UrbanFrontline.Client.Core.Actor.Movement;
-using UrbanFrontline.Client.Core.Actor.Camera;
-
 using Cysharp.Threading.Tasks;
+using UniRx;
+using UnityEngine;
+using UrbanFrontline.Client.Core.Actor.Animation;
+using UrbanFrontline.Client.Core.Actor.Camera;
+using UrbanFrontline.Client.Core.Actor.Movement;
+using UrbanFrontline.Client.Core.Actor.State.Base;
+using UrbanFrontline.Client.Core.Actor.State.Fire;
+using UrbanFrontline.Client.Core.Actor.State.Move;
 using UrbanFrontline.Client.Core.Actor.Weapon.Base;
+using UrbanFrontline.Client.Core.Input;
 
 namespace UrbanFrontline.Client.Core.Actor
 {

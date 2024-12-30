@@ -4,9 +4,9 @@
 // Author: LHBM04
 // ========================================
 
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace UrbanFrontline.Common
 {
