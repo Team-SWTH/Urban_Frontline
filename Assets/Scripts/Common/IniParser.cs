@@ -36,8 +36,8 @@ namespace UrbanFrontline.Common
             StringBuilder sectionBuffer = new StringBuilder(1024);
             GetPrivateProfileString(null, null, null, sectionBuffer, sectionBuffer.Capacity, filePath);
 
-            var sections = sectionBuffer.ToString().Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var section in sections)
+            string[] sections = sectionBuffer.ToString().Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string section in sections)
             {
                 StringBuilder keyBuffer = new StringBuilder(1024);
                 GetPrivateProfileString(section, null, null, keyBuffer, keyBuffer.Capacity, filePath);
@@ -65,7 +65,7 @@ namespace UrbanFrontline.Common
                 Dictionary<string, string> keys = iniData.GetSection(section);
                 if (keys != null)
                 {
-                    foreach (var keyValue in keys)
+                    foreach (KeyValuePair<string, string> keyValue in keys)
                     {
                         WritePrivateProfileString(section, keyValue.Key, keyValue.Value, filePath);
                     }
