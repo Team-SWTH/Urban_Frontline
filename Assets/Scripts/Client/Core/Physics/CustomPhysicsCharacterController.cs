@@ -63,13 +63,12 @@ namespace UrbanFrontline.Client.Core.Physics
         private void Start()
         {
             m_characterController = GetComponent<CharacterController>();
+        }
 
-            Observable.EveryUpdate()
-                      .Subscribe(_ => 
-                      { 
-                          HandlePhysics();
-                          CheckOnGrounded();
-                      }).AddTo(this);
+        private void Update()
+        {
+            HandlePhysics();
+            CheckOnGrounded();
         }
 
         /// <summary>
