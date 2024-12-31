@@ -22,12 +22,6 @@ namespace UrbanFrontline.Client.Core.Graphics
         [Tooltip("씬에서 사용할 UniversalRenderPipelineAsset")]
         public UniversalRenderPipelineAsset URPAsset;
 
-        /// <summary>
-        /// 씬에서 사용할 ScriptableRendererData
-        /// </summary>
-        [Tooltip("씬에서 사용할 ScriptableRendererData")]
-        public ScriptableRendererData RendererData;
-
         void Start()
         {
             ChangeURPSettings();
@@ -35,43 +29,14 @@ namespace UrbanFrontline.Client.Core.Graphics
 
         void ChangeURPSettings()
         {
-            if (URPAsset != null && RendererData != null)
+            if (URPAsset != null)
             {
-                if (GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset currentURPAsset)
-                {
-                    GraphicsSettings.defaultRenderPipeline = URPAsset;
-
-                    FieldInfo rendererDataListField = typeof(UniversalRenderPipelineAsset).GetField("m_RendererDataList", BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (rendererDataListField != null)
-                    {
-                        ScriptableRendererData[] rendererDataList = rendererDataListField.GetValue(URPAsset) as ScriptableRendererData[];
-                        if (rendererDataList != null && rendererDataList.Length > 0)
-                        {
-                            rendererDataList[0] = RendererData;
-                            rendererDataListField.SetValue(URPAsset, rendererDataList);
-                        }
-#if UNITY_EDITOR
-                        Debug.Log("URP settings have been updated.");
-#endif
-                    }
-                    else
-                    {
-#if UNITY_EDITOR
-                        Debug.LogError("Unable to find m_RendererDataList field.");
-#endif
-                    }
-                }
-                else
-                {
-#if UNITY_EDITOR
-                    Debug.LogError("Current render pipeline is not URP.");
-#endif
-                }
+                QualitySettings.renderPipeline = URPAsset;
             }
             else
             {
 #if UNITY_EDITOR
-                Debug.LogError("URP Asset or Renderer Data is missing.");
+                Debug.LogError("URP Asset is missing.");
 #endif
             }
         }
