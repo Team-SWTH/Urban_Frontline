@@ -8,8 +8,6 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
-using Cysharp.Threading.Tasks;
-
 using UnityEngine;
 
 using Unity.Cinemachine;
@@ -22,11 +20,18 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
 
         #region Components
         /// <summary>
-        /// 카메라의 트랜스폼
+        /// 카메라의 Transform
         /// </summary>
-        [Tooltip("카메라의 트랜스폼")]
+        [Tooltip("카메라의 Transform")]
         [SerializeField]
         private Transform m_cameraTransform;
+
+        /// <summary>
+        /// 카메라 팔로우의 Transform
+        /// </summary>
+        [Tooltip("카메라 팔로우의 Transform")]
+        [SerializeField]
+        private Transform m_cameraFollowTransform;
 
         /// <summary>
         /// 시네머신 카메라 컴포넌트
@@ -35,25 +40,21 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         [SerializeField]
         private CinemachineCamera m_cinemachineCamera;
 
-        /// <summary>
-        /// 시네머신의 공전 컴포넌트
-        /// </summary>
-        [Tooltip("시네머신의 공전 컴포넌트")]
-        [SerializeField]
-        private CinemachineOrbitalFollow m_cinemachineOrbitalFollow;
+        [Space(5.0f)]
 
         /// <summary>
-        /// 시네머신의 회전 컴포넌트
+        /// 오른손의 Transform
         /// </summary>
-        [Tooltip("시네머신의 회전 컴포넌트")]
+        [Tooltip("오른손의 Transform")]
         [SerializeField]
-        private CinemachineInputAxisController m_cinemachineAxisController;
+        private Transform m_rightHandTransform;
+
         #endregion
 
         [Space(10.0f)]
-        [Header("FOV")]
+        [Header("FOV Settings")]
 
-        #region FOV
+        #region FOV Settings
         /// <summary>
         /// FOV 값
         /// </summary>
@@ -77,58 +78,80 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         #endregion
 
         [Space(10.0f)]
-        [Header("FreeLook")]
+        [Header("Input Settings")]
 
-        #region FreeLook
+        #region Input Settings
+
         /// <summary>
-        /// FreeLook이 해제 될 경우 돌아갈 프리셋
-        /// 기본 값으로 (0, 4)
+        /// 마우스 X축 입력
         /// </summary>
-        [Tooltip("FreeLook이 해제 될 경우 돌아갈 프리셋")]
+        [Tooltip("마우스 X축 입력")]
         [SerializeField]
-        private Vector2 m_desinationOrbitalOffset;
+        private string m_xAxisInput = "Mouse X";
 
         /// <summary>
-        /// FreeLook (자유 시점) 활성화 변수
+        /// 마우스 Y축 입력
         /// </summary>
-        private bool m_isFreeLookEnabled = false;
-
-        /// <summary>
-        /// FreeLook 애니메이션 취소 함수
-        /// </summary>
-        private CancellationTokenSource m_cancelAnimation;
-
-        /// <summary>
-        /// FreeLook 애니메이션의 지속 시간
-        /// </summary>
-        [Tooltip("FreeLook 애니메이션의 지속 시간")]
+        [Tooltip("마우스 Y축 입력")]
         [SerializeField]
-        private float m_cancelAnimationDuration = 0.1f;
-        #endregion
-
-        [Space(10.0f)]
-        [Header("Targets")]
-
-        #region Targets
-        /// <summary>
-        /// 플레이어의 Transform 컴포넌트
-        /// </summary>
-        [Tooltip("플레이어의 Transform 컴포넌트")]
-        [SerializeField]
-        private Transform m_playerTransform;
+        private string m_yAxisInput = "Mouse Y";
 
         /// <summary>
-        /// 총의 Transform 속성
+        /// 회전 감도
         /// </summary>
-        [Tooltip("오른손의 Transform 컴포넌트")]
+        [Tooltip("sensitivity")]
         [SerializeField]
-        private Transform m_rightHandTransform;
+        private float m_sensitivity = 200;
+        private float m_sensitivityMultipler = 1.0f;
+
+        /// <summary>
+        /// 좌우 회전 값
+        /// </summary>
+        private float m_mouseX;
+
+        /// <summary>
+        /// 상하 회전 값
+        /// </summary>
+        private float m_mouseY;
+
+        /// <summary>
+        /// 최대 상 회전 값
+        /// </summary>
+        [Tooltip("최대 상 회전 값")]
+        [SerializeField]
+        private float m_maxMouseY = 70.0f;
+
+        /// <summary>
+        /// 최대 하 회전 값
+        /// </summary>
+        [Tooltip("최대 하 회전 값")]
+        [SerializeField]
+        private float m_minMouseY = -70.0f;
         #endregion
 
         private void Awake()
         {
             SetFieldOfView(m_fieldOfView);
             SetWeight(m_fieldOfViewWeight);
+        }
+
+        private void Update()
+        {
+            m_mouseX += UnityEngine.Input.GetAxis(m_xAxisInput) * m_sensitivity * m_sensitivityMultipler * Time.deltaTime;
+            m_mouseY += UnityEngine.Input.GetAxis(m_yAxisInput) * m_sensitivity * m_sensitivityMultipler * Time.deltaTime;
+            m_mouseY = Mathf.Clamp(m_mouseY, m_minMouseY, m_maxMouseY);
+
+            Quaternion result = Quaternion.Euler(new Vector3(-m_mouseY, m_mouseX, 0));
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, result.eulerAngles.y, transform.rotation.eulerAngles.z);
+            m_cameraFollowTransform.rotation = Quaternion.Euler(result.eulerAngles.x, m_cameraFollowTransform.rotation.eulerAngles.y, result.eulerAngles.z);
+            m_rightHandTransform.rotation = Quaternion.LookRotation(m_cameraTransform.forward) * Quaternion.Euler(0, -90, 0);
+        }
+
+        private void LateUpdate()
+        {
+            float destFOV = m_fieldOfView * m_fieldOfViewWeight;
+            float lerpFOV = Mathf.Lerp(m_cinemachineCamera.Lens.FieldOfView, destFOV, m_fieldOfViewLerpSpeed);
+            m_cinemachineCamera.Lens.FieldOfView = lerpFOV;
         }
 
         /// <summary>
@@ -147,66 +170,6 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         public void SetFieldOfView(float fieldOfView)
         {
             m_fieldOfView = fieldOfView;
-        }
-
-        /// <summary>
-        ///  FreeLook (자유 시점) 활성화 함수
-        /// </summary>
-        /// <param name="enable">자유시점 활성화 여부</param>
-        public void EnableFreeLook(bool enable)
-        {
-            m_isFreeLookEnabled = enable;
-
-            if (!enable)
-            {
-                m_isFreeLookEnabled = true;
-
-                m_cancelAnimation?.Cancel();
-                m_cancelAnimation?.Dispose();
-                m_cancelAnimation = new CancellationTokenSource();
-
-                RotatePlayerTowardsCameraAnimation().Forget();
-            }
-        }
-
-        /// <summary>
-        /// FreeLook 해제 활성화 함수
-        /// </summary>
-        /// <returns>void</returns>
-        public async UniTaskVoid RotatePlayerTowardsCameraAnimation()
-        {
-            float initialX = m_cinemachineOrbitalFollow.HorizontalAxis.Value;
-            float initialY = m_cinemachineOrbitalFollow.VerticalAxis.Value;
-
-            float t = 0f;
-
-            while (t < 1f)
-            {
-                t += Time.deltaTime / m_cancelAnimationDuration;
-
-                m_cinemachineOrbitalFollow.HorizontalAxis.Value = Mathf.Lerp(initialX, m_desinationOrbitalOffset.x, t);
-                m_cinemachineOrbitalFollow.VerticalAxis.Value = Mathf.Lerp(initialY, m_desinationOrbitalOffset.y, t);
-
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: m_cancelAnimation.Token);
-            }
-
-            m_isFreeLookEnabled = false;
-        }
-
-        /// <summary>
-        /// 매 프레임 호출되는 카메라 업데이트 함수
-        /// </summary>
-        public void UpdateCamera()
-        {
-            if (!m_isFreeLookEnabled)
-            {
-                m_playerTransform.eulerAngles = new Vector3(m_playerTransform.eulerAngles.x, m_cameraTransform.eulerAngles.y, m_playerTransform.eulerAngles.z);
-                m_rightHandTransform.rotation = Quaternion.LookRotation(m_cameraTransform.forward) * Quaternion.Euler(0, -90, 0);
-            }
-
-            float destFOV = m_fieldOfView * m_fieldOfViewWeight;
-            float lerpFOV = Mathf.Lerp(m_cinemachineCamera.Lens.FieldOfView, destFOV, m_fieldOfViewLerpSpeed);
-            m_cinemachineCamera.Lens.FieldOfView = lerpFOV;
         }
     }
 }

@@ -137,20 +137,12 @@ namespace UrbanFrontline.Client.Core.Actor
 
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);
+        }
 
-            Observable.EveryUpdate()
-                      .Subscribe(_ =>
-                      {
-                          m_moveStateMachine.Update();
-                          m_aimStateMachine.Update();
-                          CameraController.UpdateCamera();
-                      }).AddTo(this);
-
-            InputProvider.FreeLookInput
-                         .Subscribe(isFreeLook => 
-                         { 
-                             CameraController.EnableFreeLook(isFreeLook); 
-                         }).AddTo(this);
+        private void Update()
+        {
+            m_moveStateMachine.Update();
+            m_aimStateMachine.Update();
         }
 
         /// <summary>

@@ -64,20 +64,16 @@ namespace UrbanFrontline.Client.Core.Input
 
         #endregion
 
-        private void Start()
+        private void Update()
         {
-            Observable.EveryUpdate()
-                      .Subscribe(_ => 
-                      { 
-                          UpdateMoveInput();
-                          UpdateRunInput();
-                          UpdateJumpInput(); 
-                          UpdateRollInput();
-                          UpdateFreeLookInput();
-                          UpdateFireInput();
-                          UpdateADSInput();
-                          UpdateReloadInput();
-                      }).AddTo(this);
+            UpdateMoveInput();
+            UpdateRunInput();
+            UpdateJumpInput();
+            UpdateRollInput();
+            UpdateFreeLookInput();
+            UpdateFireInput();
+            UpdateADSInput();
+            UpdateReloadInput();
         }
 
         #region Update Methods
