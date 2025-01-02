@@ -45,18 +45,7 @@ namespace UrbanFrontline.Common
                 {
                     if (!m_instance)
                     {
-                        m_instance = FindAnyObjectByType<TInstance>();
-                        if (!m_instance)
-                        {
-                            var findObject = GameObject.Find(typeof(TInstance).ToString());
-                            if (!findObject)
-                            {
-                                findObject = new GameObject(typeof(TInstance).ToString());
-                            }
-
-                            m_instance = findObject.AddComponent<TInstance>();
-                        }
-
+                        m_instance = FindAnyObjectByType<TInstance>() ?? new GameObject(typeof(TInstance).ToString()).AddComponent<TInstance>();
                         DontDestroyOnLoad(m_instance);
                     }
 
