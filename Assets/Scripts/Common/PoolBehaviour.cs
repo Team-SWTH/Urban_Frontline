@@ -19,11 +19,7 @@ namespace UrbanFrontline.Common
         /// <summary>
         /// 생성한 인스턴스를 담을 Queue.
         /// </summary>
-        public ConcurrentQueue<TObject> poolQueue
-        {
-            get;
-            set;
-        } = new ConcurrentQueue<TObject>();
+        private ConcurrentQueue<TObject> m_poolQueue;
 
         /// <summary>
         /// 생성할 인스턴스의 프리팹.
@@ -33,7 +29,7 @@ namespace UrbanFrontline.Common
         private GameObject m_prefab;
 
         /// <summary>
-        /// 
+        /// 생성할 인스턴스의 기본 최대 개수.
         /// </summary>
         private static readonly int DEFAULT_MAX_SIZE = 20;
 
@@ -43,6 +39,16 @@ namespace UrbanFrontline.Common
         [SerializeField]
         [Tooltip("생성할 인스턴스의 최대 개수.")]
         private int m_maxSize;
+
+        public int CountActive
+        {
+            get { return m_maxSize - m_poolQueue.Count; }
+        }
+
+        public int CountInactive
+        {
+            get { return m_poolQueue.Count; }
+        }
 
         private void Reset()
         {
@@ -62,14 +68,14 @@ namespace UrbanFrontline.Common
             m_maxSize = m_maxSize > 0 ? m_maxSize : DEFAULT_MAX_SIZE;
             for (int count = 0; count < m_maxSize; ++count)
             {
-                poolQueue.Enqueue(Create());
+                m_poolQueue.Enqueue(Create());
             }
         }
 
         public TObject Create()
         {
             TObject instance = Instantiate(m_prefab).GetComponent<TObject>();
-            instance.gameObject.name = $"{m_prefab.name}_{poolQueue.Count}";
+            instance.gameObject.name = $"{m_prefab.name}_{m_poolQueue.Count}";
             instance.gameObject.transform.parent = transform;
             instance.gameObject.transform.position = transform.position;
             instance.gameObject.SetActive(false);
@@ -79,12 +85,18 @@ namespace UrbanFrontline.Common
 
         public TObject Get()
         {
-            return poolQueue.TryDequeue(out TObject newObj) ? newObj : Create();
+            if (!m_poolQueue.TryDequeue(out TObject newObj))
+            {
+                m_maxSize++;
+                return Create();
+            }
+
+            return newObj;
         }
 
         public void Release(TObject usedObj)
         {
-            poolQueue.Enqueue(usedObj);
+            m_poolQueue.Enqueue(usedObj);
             usedObj.gameObject.transform.parent = transform;
             usedObj.gameObject.transform.position = transform.position;
             usedObj.gameObject.SetActive(false);

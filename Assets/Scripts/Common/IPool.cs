@@ -1,11 +1,10 @@
 // ========================================
 // File: IPool.cs
 // Created: 2025-01-02 19:38:52
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System.Collections.Concurrent;
-using UnityEngine;
 
 namespace UrbanFrontline.Common
 {
@@ -15,6 +14,16 @@ namespace UrbanFrontline.Common
         { 
             get; 
             set; 
+        }
+
+        int CountActive
+        {
+            get;
+        }
+
+        int CountInactive
+        {
+            get;
         }
 
         T Create();

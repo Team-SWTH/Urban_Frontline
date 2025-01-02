@@ -6,18 +6,27 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace UrbanFrontline.Common
 {
     public class Pool<TInstance> : IPool<TInstance> where TInstance : class, new()
     {
-        public ConcurrentQueue<TInstance> poolQueue 
-        { 
-            get; 
-            set; 
-        } = new ConcurrentQueue<TInstance>();
+        private ConcurrentQueue<TInstance> m_poolQueue;
+
+        public virtual int CountAll
+        {
+            get { return 15; }
+        }
+
+        public int CountActive
+        {
+            get { return CountAll - CountInactive; }
+        }
+
+        public int CountInactive
+        {
+            get { return m_poolQueue.Count; }
+        }
 
         public TInstance Create()
         {
@@ -26,12 +35,12 @@ namespace UrbanFrontline.Common
 
         public TInstance Get()
         {
-            return poolQueue.TryDequeue(out var instance) ? instance : Create();
+            return m_poolQueue.TryDequeue(out var instance) ? instance : Create();
         }
 
         public void Release(TInstance usedObj)
         {
-            poolQueue.Enqueue(usedObj);
+            m_poolQueue.Enqueue(usedObj);
         }
     }
 }
