@@ -10,12 +10,6 @@ namespace UrbanFrontline.Common
 {
     public interface IPool<T>
     {
-        ConcurrentQueue<T> poolQueue
-        { 
-            get; 
-            set; 
-        }
-
         int CountActive
         {
             get;
