@@ -13,6 +13,11 @@ namespace UrbanFrontline.Server.Core.Networks
     /// </summary>
     public class ReceiveBuffer : BufferBase
     {
+        public override ushort Size
+        {
+            get { return 32768; }
+        }
+
         /// <summary>
         /// 현재 읽고 있는 위치.
         /// </summary>
@@ -43,7 +48,7 @@ namespace UrbanFrontline.Server.Core.Networks
             get { return new ArraySegment<byte>(Data.Array, Data.Offset + m_writePosition, FreeSize); }
         }
 
-        public ReceiveBuffer(int size) : base(size)
+        public ReceiveBuffer() : base()
         {
             m_readPosition = 0;
             m_writePosition = 0;

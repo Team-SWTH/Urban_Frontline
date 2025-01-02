@@ -13,6 +13,11 @@ namespace UrbanFrontline.Server.Core.Networks
     /// </summary>
     public class SendBuffer : BufferBase
     {
+        public override ushort Size
+        {
+            get { return 16384; }
+        }
+
         /// <summary>
         /// 현재 쓰고 있는 위치.
         /// </summary>
@@ -26,7 +31,7 @@ namespace UrbanFrontline.Server.Core.Networks
             get { return Length - m_writePosition; }
         }
 
-        public SendBuffer(int size) : base(size)
+        public SendBuffer() : base()
         {
         }
 
@@ -37,7 +42,8 @@ namespace UrbanFrontline.Server.Core.Networks
         /// <returns></returns>
         public ArraySegment<byte> Open(int numOfBytes)
         {
-            return numOfBytes > Clearance ? new ArraySegment<byte>() : new ArraySegment<byte>(Data.Array, m_writePosition, numOfBytes);
+            return numOfBytes > Clearance ? new ArraySegment<byte>() : 
+                                            new ArraySegment<byte>(Data.Array, m_writePosition, numOfBytes);
         }
 
         /// <summary>

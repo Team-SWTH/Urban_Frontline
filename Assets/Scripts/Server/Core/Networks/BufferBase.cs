@@ -20,6 +20,14 @@ namespace UrbanFrontline.Server.Core.Networks
         private byte[] m_buffer;
 
         /// <summary>
+        /// 버퍼의 사이즈.
+        /// </summary>
+        public virtual ushort Size
+        {
+            get { return 1024; }
+        }
+
+        /// <summary>
         /// 저장된 데이터.
         /// </summary>
         public ArraySegment<byte> Data
@@ -35,9 +43,9 @@ namespace UrbanFrontline.Server.Core.Networks
             get { return m_buffer.Length; }
         }
 
-        public BufferBase(int size)
+        public BufferBase()
         {
-            m_buffer = new byte[size];
+            m_buffer = new byte[Size];
         }
     }
 }
