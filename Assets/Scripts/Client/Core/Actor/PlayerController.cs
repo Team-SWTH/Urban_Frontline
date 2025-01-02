@@ -138,6 +138,11 @@ namespace UrbanFrontline.Client.Core.Actor
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);
 
+            InputProvider.FreeLookInput.Subscribe(enabled => 
+                                        { 
+                                            CameraController.SetFreeLookStatement(enabled); 
+                                        }).AddTo(this);
+
             // 임시 코드 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
