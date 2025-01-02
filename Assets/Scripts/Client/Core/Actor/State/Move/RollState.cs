@@ -39,6 +39,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
             Player.AnimatorController.Play("Roll", "Base Layer");
             Player.AnimatorController.SetLayerWeight(0.0f, "Upper Layer");
 
+            Player.CameraController.SetSensitivityMultipler(0.0f);
+
             WaitOnEndState().Forget();
         }
 
@@ -68,6 +70,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
                 await UniTask.WaitForEndOfFrame();
             }
 
+            Player.CameraController.SetSensitivityMultipler(1.0f);
             Player.SetMoveState(Player.IdleState);
         }
     }

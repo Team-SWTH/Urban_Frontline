@@ -23,5 +23,17 @@ namespace UrbanFrontline.Client.Core.Actor.Camera
         /// </summary>
         /// <param name="fieldOfView">바꿀 FOV 값</param>
         void SetFieldOfView(float fieldOfView);
+
+        /// <summary>
+        /// 둘러보기 감도(곱연산 값) 조정
+        /// </summary>
+        /// <param name="multipler">변경할 값</param>
+        void SetSensitivityMultipler(float multipler);
+
+        /// <summary>
+        /// FreeLook 상태 변환
+        /// </summary>
+        /// <param name="enable">freelook enable : true, disable : false</param>
+        void SetFreeLookStatement(bool enable);
     }
 }
