@@ -137,6 +137,10 @@ namespace UrbanFrontline.Client.Core.Actor
 
             m_moveStateMachine.SetInitialState(IdleState);
             m_aimStateMachine.SetInitialState(UnaimedState);
+
+            // 임시 코드 
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
