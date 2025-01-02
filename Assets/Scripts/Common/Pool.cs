@@ -9,10 +9,17 @@ using System.Collections.Concurrent;
 
 namespace UrbanFrontline.Common
 {
+    /// <summary>
+    /// 기본 Pool 패턴을 구현합니다.
+    /// </summary>
+    /// <typeparam name="TInstance"></typeparam>
     public class Pool<TInstance> : IPool<TInstance> where TInstance : class, new()
     {
         private ConcurrentQueue<TInstance> m_poolQueue;
 
+        /// <summary>
+        /// 생성할 인스턴스의 최대 개수.
+        /// </summary>
         public virtual int CountAll
         {
             get { return 15; }

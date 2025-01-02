@@ -11,15 +11,15 @@ using UnityEngine;
 namespace UrbanFrontline.Common
 {
     /// <summary>
-    /// Pool 패턴의 MonoBehaviour 클래스.
+    /// MonoBehaviour를 상속받은 Pool 패턴의 동작을 정의합니다.
     /// </summary>
-    /// <typeparam name="TObject"></typeparam>
-    public class PoolBehaviour<TObject> : MonoBehaviour, IPool<TObject> where TObject : MonoBehaviour
+    /// <typeparam name="TInstance">Pooling할 MonoBehaviour를 상속받은 인스턴스의 타입.</typeparam>
+    public class PoolBehaviour<TInstance> : MonoBehaviour, IPool<TInstance> where TInstance : MonoBehaviour
     {
         /// <summary>
-        /// 생성한 인스턴스를 담을 Queue.
+        /// 생성한 인스턴스를 담을 Thread-Safe한 Queue.
         /// </summary>
-        private ConcurrentQueue<TObject> m_poolQueue;
+        private ConcurrentQueue<TInstance> m_poolQueue;
 
         /// <summary>
         /// 생성할 인스턴스의 프리팹.
@@ -72,9 +72,9 @@ namespace UrbanFrontline.Common
             }
         }
 
-        public TObject Create()
+        public TInstance Create()
         {
-            TObject instance = Instantiate(m_prefab).GetComponent<TObject>();
+            TInstance instance = Instantiate(m_prefab).GetComponent<TInstance>();
             instance.gameObject.name = $"{m_prefab.name}_{m_poolQueue.Count}";
             instance.gameObject.transform.parent = transform;
             instance.gameObject.transform.position = transform.position;
@@ -83,9 +83,9 @@ namespace UrbanFrontline.Common
             return instance;
         }
 
-        public TObject Get()
+        public TInstance Get()
         {
-            if (!m_poolQueue.TryDequeue(out TObject newObj))
+            if (!m_poolQueue.TryDequeue(out TInstance newObj))
             {
                 m_maxSize++;
                 return Create();
@@ -94,7 +94,7 @@ namespace UrbanFrontline.Common
             return newObj;
         }
 
-        public void Release(TObject usedObj)
+        public void Release(TInstance usedObj)
         {
             m_poolQueue.Enqueue(usedObj);
             usedObj.gameObject.transform.parent = transform;
