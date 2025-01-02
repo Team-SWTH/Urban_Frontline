@@ -436,6 +436,9 @@ MonoBehaviour:
   m_sensitivity: 200
   m_maxMouseY: 70
   m_minMouseY: -70
+  m_freelookEnable: 0
+  m_freelookLerpSpeed: 5
+  m_beforeMouseX: 0
 --- !u!114 &2252228960297951696
 MonoBehaviour:
   m_ObjectHideFlags: 0
