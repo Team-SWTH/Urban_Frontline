@@ -15,6 +15,9 @@ namespace UrbanFrontline.Common
     /// <typeparam name="TInstance"></typeparam>
     public class Pool<TInstance> : IPool<TInstance> where TInstance : class, new()
     {
+        /// <summary>
+        /// 생성한 인스턴스를 담을 Thread-Safe한 Queue.
+        /// </summary>
         private ConcurrentQueue<TInstance> m_poolQueue;
 
         /// <summary>
