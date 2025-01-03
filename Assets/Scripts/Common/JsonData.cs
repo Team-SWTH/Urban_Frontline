@@ -6,7 +6,7 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine.Pool;
+using System.Text.Json;
 
 namespace UrbanFrontline.Common
 {
@@ -19,23 +19,31 @@ namespace UrbanFrontline.Common
         /// <summary>
         /// 데이터가 담긴 딕셔너리.
         /// </summary>
-        private Dictionary<string, object> m_data = new(StringComparer.OrdinalIgnoreCase);
-        
+        private Dictionary<string, JsonElement> m_data = new(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
         /// 키와 값을 설정하거나 가져옵니다.
         /// </summary>
-        public object this[string key]
+        public JsonElement this[string key]
         {
-            get { return GetValue<object>(key); }
+            get { return GetValue<JsonElement>(key); }
             set { SetValue(key, value); }
         }
 
         /// <summary>
         /// 키와 값을 설정합니다.
         /// </summary>
-        public void SetValue(string key, object value)
+        public void SetValue(string key, JsonElement value)
         {
             m_data[key] = value;
+        }
+
+        /// <summary>
+        /// 키와 값을 설정합니다.
+        /// </summary>
+        public void SetValue<T>(string key, T value)
+        {
+            m_data[key] = JsonSerializer.SerializeToDocument(value).RootElement;
         }
 
         /// <summary>
@@ -43,13 +51,18 @@ namespace UrbanFrontline.Common
         /// </summary>
         public T GetValue<T>(string key)
         {
-            return (T)m_data.GetValueOrDefault(key);
+            if (m_data.TryGetValue(key, out JsonElement value))
+            {
+                return value.Deserialize<T>();
+            }
+
+            return default;
         }
 
         /// <summary>
         /// 모든 키-값 쌍을 반환합니다.
         /// </summary>
-        public Dictionary<string, object> GetAllData()
+        public Dictionary<string, JsonElement> GetAllData()
         {
             return m_data;
         }
@@ -70,7 +83,7 @@ namespace UrbanFrontline.Common
         /// </summary>
         public string ToJsonString()
         {
-            return JsonParser.ToJson(this);
+            return JsonSerializer.Serialize(m_data, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }
