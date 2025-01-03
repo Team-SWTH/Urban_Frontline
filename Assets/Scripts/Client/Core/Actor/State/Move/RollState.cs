@@ -41,6 +41,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
 
             Player.CameraController.SetSensitivityMultipler(0.0f);
 
+            Player.PlayerStamina.DrainStamina(Player.PlayerStamina.RollStaminaDrainPerFrame);
+
             WaitOnEndState().Forget();
         }
 
@@ -50,6 +52,16 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
+        }
+
+        /// <summary>
+        /// Roll 상태에서 매 프레임 호출되는 함수
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            Player.PlayerStamina.RegenStamina(Player.PlayerStamina.WalkStaminaRegenPerSecond * Time.deltaTime);
         }
 
         /// <summary>

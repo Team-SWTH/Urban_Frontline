@@ -7,14 +7,17 @@
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
+
+using UrbanFrontline.Client.Core.Input;
+
 using UrbanFrontline.Client.Core.Actor.Animation;
 using UrbanFrontline.Client.Core.Actor.Camera;
 using UrbanFrontline.Client.Core.Actor.Movement;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Actor.State.Fire;
 using UrbanFrontline.Client.Core.Actor.State.Move;
+using UrbanFrontline.Client.Core.Actor.Status;
 using UrbanFrontline.Client.Core.Actor.Weapon.Base;
-using UrbanFrontline.Client.Core.Input;
 
 namespace UrbanFrontline.Client.Core.Actor
 {
@@ -25,14 +28,15 @@ namespace UrbanFrontline.Client.Core.Actor
     [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerCameraController))]
+    [RequireComponent(typeof(PlayerStamina))]
     public class PlayerController : MonoBehaviour
     {
         #region Interfaces
         /// <summary>
         /// 입력 이벤트를 발행하는 인터페이스
         /// </summary>
-
         public IInputProvider InputProvider;
+
         /// <summary>
         /// 애니메이터를 관리하는 인터페이스
         /// </summary>
@@ -103,6 +107,10 @@ namespace UrbanFrontline.Client.Core.Actor
         public ReloadState ReloadState { get; private set; }
         #endregion
 
+        #region Status Classes
+        public PlayerStamina PlayerStamina { get; private set; }
+        #endregion
+
         /// <summary>
         /// 플레이어가 가지고 있는 Move State machine
         /// </summary>
@@ -120,6 +128,8 @@ namespace UrbanFrontline.Client.Core.Actor
             CharacterMovement = GetComponent<ICharacterMovement>();
             CameraController = GetComponent<ICameraController>();
             WeaponController = GetComponentInChildren<IWeaponController>();
+
+            PlayerStamina = GetComponent<PlayerStamina>();
 
             m_moveStateMachine = new PlayerStateMachine();
             m_aimStateMachine = new PlayerStateMachine();
