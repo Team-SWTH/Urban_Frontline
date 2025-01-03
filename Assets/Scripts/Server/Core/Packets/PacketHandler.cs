@@ -5,48 +5,41 @@
 // ========================================
 
 using System.IO;
-using Google.Protobuf;
+using ProtoBuf;
 
 namespace UrbanFrontline.Server.Core.Packets
 {
     /// <summary>
-    /// 
+    /// 송/수신된 패킷을 제어합니다.
     /// </summary>
     public static class PacketHandler
     {
         /// <summary>
-        /// 
+        /// 패킷을 직렬화합니다.
         /// </summary>
-        /// <typeparam name="TPacket"></typeparam>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public static byte[] Serialize<TPacket>(IMessage packet) where TPacket : IMessage
+        /// <typeparam name="TPacket">작렬화할 패킷의 종류.</typeparam>
+        /// <param name="packet">직렬화할 패킷.</param>
+        /// <returns>직렬화된 패킷.</returns>
+        public static byte[] Serialize<TPacket>(TPacket packet) where TPacket : PacketBase
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                CodedOutputStream codedStream = new CodedOutputStream(memoryStream);
-                packet.WriteTo(memoryStream);
-                codedStream.Flush();
-
-                return packet.ToByteArray();
+                Serializer.Serialize(memoryStream, packet);
+                return memoryStream.ToArray();
             }
         }
 
         /// <summary>
-        /// 
+        /// 패킷을 역직렬화합니다.
         /// </summary>
-        /// <typeparam name="TPacket"></typeparam>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
-        public static TPacket Deserialize<TPacket>(byte[] buffer) where TPacket : IMessage, new()
+        /// <typeparam name="TPacket">역작렬화할 패킷의 종류.</typeparam>
+        /// <param name="buffer">역직렬화할 패킷.</param>
+        /// <returns>역직렬화된 패킷.</returns>
+        public static TPacket Deserialize<TPacket>(byte[] buffer) where TPacket : PacketBase
         {
             using (MemoryStream memoryStream = new MemoryStream(buffer))
             {
-                CodedInputStream codedStream = new CodedInputStream(memoryStream);
-                TPacket packet = new TPacket();
-                packet.MergeFrom(memoryStream);
-
-                return packet;
+                return Serializer.Deserialize<TPacket>(memoryStream);
             }
         }
     }

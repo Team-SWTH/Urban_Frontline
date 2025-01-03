@@ -13,7 +13,7 @@ using UrbanFrontline.Server.Core.Utilities;
 namespace UrbanFrontline.Server.Core.Networks
 {
     /// <summary>
-    /// 세션.
+    /// 세션의 기본 동작을 구현합니다.
     /// </summary>
     public abstract class SessionBase
     {
@@ -32,6 +32,7 @@ namespace UrbanFrontline.Server.Core.Networks
         /// </summary>
         private object m_lock = new object();
 
+        #region I/O Buffers
         /// <summary>
         /// 수신용 버퍼.
         /// </summary>
@@ -47,10 +48,34 @@ namespace UrbanFrontline.Server.Core.Networks
         {
             get;
         } = new SendBuffer();
+        #endregion
 
+        #region Events
+        /// <summary>
+        /// 세션에 연결되었을 때 발생하는 이벤트.
+        /// </summary>
         public event ConnectEvent onConnected;
-        public event ConnectEvent onDisconnected;
 
+        /// <summary>
+        /// 패킷을 수신받았을 때 발생하는 이벤트.
+        /// </summary>
+        public event ConnectEvent onReceive;
+
+        /// <summary>
+        /// 패킷을 송신할 때 발생하는 이벤트.
+        /// </summary>
+        public event ConnectEvent onSend;
+
+        /// <summary>
+        /// 세션에서 연결이 해제되었을 때 발생하는 이벤트.
+        /// </summary>
+        public event ConnectEvent onDisconnected;
+        #endregion
+
+        /// <summary>
+        /// 세션을 서버와 연결합니다.
+        /// </summary>
+        /// <param name="connectedSocket"></param>
         public void Connect(Socket connectedSocket)
         {
             m_socket = connectedSocket;
@@ -59,8 +84,12 @@ namespace UrbanFrontline.Server.Core.Networks
             StartReceive();
         }
 
+        /// <summary>
+        /// 세션을 서버로부터 연결 해제합니다.
+        /// </summary>
         public void Disconnect()
         {
+            // 중첩 해제 방지.
             if (Interlocked.Exchange(ref m_isConnected, 1) == 1)
             {
                 return;
@@ -71,6 +100,10 @@ namespace UrbanFrontline.Server.Core.Networks
             m_socket.Close();
         }
 
+        /// <summary>
+        /// 데이터를 송신합니다.
+        /// </summary>
+        /// <param name="data">송신할 데이터.</param>
         public void Send(byte[] data)
         {
             lock (m_lock)
@@ -97,12 +130,24 @@ namespace UrbanFrontline.Server.Core.Networks
             }
         }
 
+        protected virtual void OnConnected(EndPoint endPoint)
+        {
+            onConnected?.Invoke(endPoint);
+            Logger.LogNotice($"새로운 클라이언트와 연결되었습니다. {endPoint}");
+        }
+
+        protected virtual void OnDisconnected()
+        {
+            onDisconnected?.Invoke(m_socket.RemoteEndPoint);
+            Logger.LogNotice($"새로운 클라이언트가 연결 해제되었습니다. {m_socket.RemoteEndPoint}");
+        }
+
         private void SendCallback(IAsyncResult ar)
         {
             try
             {
                 int bytesSent = m_socket.EndSend(ar);
-                OnSend(bytesSent);
+                OnSendPacket(bytesSent);
             }
             catch (Exception exception)
             {
@@ -113,7 +158,7 @@ namespace UrbanFrontline.Server.Core.Networks
 
         private void StartReceive()
         {
-            var segment = receiveBuffer.WriteSegment;
+            ArraySegment<byte> segment = receiveBuffer.WriteSegment;
             try
             {
                 m_socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, ReceiveCallback, null);
@@ -186,18 +231,12 @@ namespace UrbanFrontline.Server.Core.Networks
             OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset + 4, dataSize - 4));
         }
 
-        protected virtual void OnConnected(EndPoint endPoint)
-        {
-            onConnected?.Invoke(endPoint);
-            Logger.LogNotice($"새로운 클라이언트와 연결되었습니다. {endPoint}");
-        }
+        protected abstract void OnSendPacket(int numBytes);
 
-        protected abstract void OnSend(int numBytes);
+        /// <summary>
+        /// 패킷을 
+        /// </summary>
+        /// <param name="payload"></param>
         protected abstract void OnReceivePacket(ArraySegment<byte> payload);
-        protected virtual void OnDisconnected()
-        {
-            onDisconnected?.Invoke(m_socket.RemoteEndPoint);
-            Logger.LogNotice($"새로운 클라이언트가 연결 해제되었습니다. {m_socket.RemoteEndPoint}");
-        }
     }
 }

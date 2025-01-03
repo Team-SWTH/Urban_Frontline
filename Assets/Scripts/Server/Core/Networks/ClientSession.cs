@@ -14,28 +14,15 @@ namespace UrbanFrontline.Server.Core.Networks
     // 클라이언트와의 세션 관리
     public class ClientSession : SessionBase
     {
-        // 연결 성공 시 호출
-        protected override void OnConnected(EndPoint endPoint)
-        {
-            Logger.LogNotice($"Connected to {endPoint}");
-        }
-
-        // 패킷 수신 시 호출
         protected override void OnReceivePacket(ArraySegment<byte> payload)
         {
             // PacketManager.Instance.HandlePacket(this, packetId, payload);
         }
 
         // 데이터 전송 완료 시 호출
-        protected override void OnSend(int numBytes)
+        protected override void OnSendPacket(int numBytes)
         {
             Logger.Log($"Sent {numBytes} bytes");
-        }
-
-        // 연결 해제 시 호출
-        protected override void OnDisconnected()
-        {
-            Logger.LogNotice("Disconnected");
         }
     }
 }
