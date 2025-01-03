@@ -1,7 +1,7 @@
 // ========================================
 // File: ServerHandler.cs
 // Created: 2024-12-29 06:17:03
-// Author: ※ 작성자 이름을 반드시 기입해주세요.
+// Author: LHBM04
 // ========================================
 
 using System.Net;
@@ -19,7 +19,7 @@ namespace UrbanFrontline.Server.Core.Networks
         private bool m_isRunning;
 
         [SerializeField]
-        private ServerBase m_server;
+        private ServerOption m_server;
 
         public Socket Socket
         {
@@ -55,7 +55,7 @@ namespace UrbanFrontline.Server.Core.Networks
             }
             catch (Exception ex)
             {
-                Utilities.Logger.LogAssertion($"서버를 열 수 없었습니다!", ex);
+                Utilities.Logger.LogException($"서버를 열 수 없었습니다!", ex);
                 StopServer();
             }
         }
@@ -84,7 +84,7 @@ namespace UrbanFrontline.Server.Core.Networks
             }
             catch (Exception ex)
             {
-                Utilities.Logger.LogAssertion($"서버를 닫을 수 없습니다!", ex);
+                Utilities.Logger.LogException($"서버를 닫을 수 없습니다!", ex);
             }
         }
 

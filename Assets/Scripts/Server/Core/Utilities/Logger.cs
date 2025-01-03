@@ -13,10 +13,16 @@ using UnityEngine;
 
 namespace UrbanFrontline.Server.Core.Utilities
 {
+    /// <summary>
+    /// 콘솔에 로그를 출력하는 정적 클래스.
+    /// </summary>
     public static class Logger
     {
 #if !UNITY_EDITOR
-        private enum ELevel
+        /// <summary>
+        /// 로그의 중요도 순위를 정의하는 열거형.
+        /// </summary>
+        private enum ELevel : byte
         {
             Log,
             Notice,
@@ -25,6 +31,7 @@ namespace UrbanFrontline.Server.Core.Utilities
             Assertion
         }
 
+        #region External Functions
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetConsoleWindow();
 
@@ -35,7 +42,8 @@ namespace UrbanFrontline.Server.Core.Utilities
         public static extern bool SetConsoleOutputCP(uint wCodePageID);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetConsoleCP(uint wCodePageID);
+        public static extern bool SetConsoleCP(uint wCodePageID);\
+        #endregion
 
         static Logger()
         {
@@ -44,6 +52,7 @@ namespace UrbanFrontline.Server.Core.Utilities
                 AllocConsole();
             }
 
+            /* UTF-8 Encoding */
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             SetConsoleOutputCP(65001);
             SetConsoleCP(65001);
@@ -51,6 +60,10 @@ namespace UrbanFrontline.Server.Core.Utilities
         }
 #endif
 
+        /// <summary>
+        /// 콘솔에 로그를 출력합니다.
+        /// </summary>
+        /// <param name="message">출력할 로그.</param>
         public static void Log(string message)
         {
 #if UNITY_EDITOR
@@ -60,6 +73,10 @@ namespace UrbanFrontline.Server.Core.Utilities
 #endif
         }
 
+        /// <summary>
+        /// 콘솔에 알림 로그를 출력합니다.
+        /// </summary>
+        /// <param name="message">출력할 알림 로그.</param>
         public static void LogNotice(string message)
         {
 #if UNITY_EDITOR
@@ -69,6 +86,10 @@ namespace UrbanFrontline.Server.Core.Utilities
 #endif
         }
 
+        /// <summary>
+        /// 콘솔에 경고 로그를 출력합니다.
+        /// </summary>
+        /// <param name="message">출력할 경고 로그.</param>
         public static void LogWarning(string message)
         {
 #if UNITY_EDITOR
@@ -78,6 +99,10 @@ namespace UrbanFrontline.Server.Core.Utilities
 #endif
         }
 
+        /// <summary>
+        /// 콘솔에 에러 로그를 출력합니다.
+        /// </summary>
+        /// <param name="message">출력할 에러 로그.</param>
         public static void LogError(string message)
         {
 #if UNITY_EDITOR
@@ -87,7 +112,12 @@ namespace UrbanFrontline.Server.Core.Utilities
 #endif
         }
 
-        public static void LogAssertion(string message, Exception exception)
+        /// <summary>
+        /// 예외와 함께 콘솔에 에러 로그를 출력합니다.
+        /// </summary>
+        /// <param name="message">출력할 에러 로그.</param>
+        /// <param name="exception">throw할 예외.</param>
+        public static void LogException(string message, Exception exception)
         {
 #if UNITY_EDITOR
             Debug.LogException(exception);

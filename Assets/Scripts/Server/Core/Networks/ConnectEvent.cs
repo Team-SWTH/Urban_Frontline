@@ -1,13 +1,12 @@
 // ========================================
-// File: ServerEvent.cs
-// Created: 2024-12-29 03:26:15
+// File: ConnectEvent.cs
+// Created: 2025-01-01 02:40:54
 // Author: LHBM04
 // ========================================
 
-using System;
+using System.Net;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
-    [Serializable]
-    public delegate void ServerEvent(ServerOption server);
+    public delegate void ConnectEvent(EndPoint endPoint);
 }
