@@ -13,6 +13,49 @@ namespace UrbanFrontline.Client.Core.Actor.Status
     /// </summary>
     public class PlayerHealth : MonoBehaviour
     {
+        [Header("Status")]
 
+        #region Status
+
+        /// <summary>
+        /// 플레이어의 체력
+        /// </summary>
+        [Tooltip("플레이어의 체력")]
+        [SerializeField]
+        private float m_health;
+
+        /// <summary>
+        /// 플레이어의 최대 체력
+        /// </summary>
+        [Tooltip("플레이어의 최대 체력")]
+        [SerializeField]
+        private float m_maxHealth;
+
+        #endregion
+
+        private void Start()
+        {
+            m_health += m_maxHealth;    
+        }
+
+        private void DrainHealth(float drainValue)
+        {
+            m_health -= drainValue;
+
+            if (m_health <= 0)
+            {
+                m_health = 0;
+            }
+        }
+
+        private void RegenHealth(float regenValue)
+        {
+            m_health += regenValue;
+
+            if (m_health > m_maxHealth)
+            {
+                m_health = m_maxHealth;
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace UrbanFrontline.Client.Core.Actor
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerCameraController))]
     [RequireComponent(typeof(PlayerStamina))]
+    [RequireComponent(typeof(PlayerHealth))]
     public class PlayerController : MonoBehaviour
     {
         #region Interfaces

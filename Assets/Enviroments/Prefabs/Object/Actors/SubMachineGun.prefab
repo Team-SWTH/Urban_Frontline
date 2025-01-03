@@ -543,6 +543,7 @@ GameObject:
   - component: {fileID: 1536153921003187379}
   - component: {fileID: 7700152882328702523}
   - component: {fileID: 6023326374605546140}
+  - component: {fileID: 5828667792218301097}
   - component: {fileID: 5382092782899930959}
   m_Layer: 0
   m_Name: SubMachineGun
@@ -738,6 +739,20 @@ MonoBehaviour:
   m_walkStaminaRegenPerSecond: 5
   m_idleStaminaRegenPerSecond: 10
   m_staminaHUDImage: {fileID: 7758031865344209203}
+--- !u!114 &5828667792218301097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105164736795019282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0db7ba08834ab15469afdbb01326468e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_health: 0
+  m_maxHealth: 100
 --- !u!114 &5382092782899930959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -820,7 +835,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.414
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
