@@ -13,6 +13,6 @@ namespace UrbanFrontline.Server.Core.Networks
     /// </summary>
     public class SessionManager : MonoBehaviour
     {
-       vc
+       
     }
 }
