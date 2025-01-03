@@ -11,6 +11,13 @@ namespace UrbanFrontline.Server.Core.Networks
 {
     public class NetworkManager : SingletonBehaviour<NetworkManager>
     {
-       
+        [SerializeField]
+        private Listener m_listener;
+
+        [SerializeField]
+        private Connector m_connector;
+
+        [SerializeField]
+        private JobScheduler m_jobScheduler;
     }
 }

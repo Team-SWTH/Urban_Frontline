@@ -5,10 +5,10 @@
 // ========================================
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using UrbanFrontline.Server.Core.Utilities;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
@@ -17,8 +17,19 @@ namespace UrbanFrontline.Server.Core.Networks
     /// </summary>
     public abstract class SessionBase
     {
+        /// <summary>
+        /// 소켓.
+        /// </summary>
         private Socket m_socket;
+
+        /// <summary>
+        /// 연결 상태.
+        /// </summary>
         private int m_isConnected;
+
+        /// <summary>
+        /// Lock을 위한 객체.
+        /// </summary>
         private object m_lock = new object();
 
         /// <summary>
@@ -27,7 +38,6 @@ namespace UrbanFrontline.Server.Core.Networks
         protected ReceiveBuffer receiveBuffer
         {
             get;
-            private set;
         } = new ReceiveBuffer();
 
         /// <summary>
@@ -36,10 +46,10 @@ namespace UrbanFrontline.Server.Core.Networks
         protected SendBuffer sendBuffer
         {
             get;
-            private set;
         } = new SendBuffer();
 
-
+        public event ConnectEvent onConnected;
+        public event ConnectEvent onDisconnected;
 
         public void Connect(Socket connectedSocket)
         {
@@ -52,7 +62,9 @@ namespace UrbanFrontline.Server.Core.Networks
         public void Disconnect()
         {
             if (Interlocked.Exchange(ref m_isConnected, 1) == 1)
+            {
                 return;
+            }
 
             OnDisconnected();
             m_socket.Shutdown(SocketShutdown.Both);
@@ -78,9 +90,9 @@ namespace UrbanFrontline.Server.Core.Networks
                 ArraySegment<byte> segment = sendBuffer.Open(sendBuffer.Clearance);
                 m_socket.BeginSend(segment.Array, segment.Offset, segment.Count, SocketFlags.None, SendCallback, null);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -92,9 +104,9 @@ namespace UrbanFrontline.Server.Core.Networks
                 int bytesSent = m_socket.EndSend(ar);
                 OnSend(bytesSent);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -106,9 +118,9 @@ namespace UrbanFrontline.Server.Core.Networks
             {
                 m_socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, ReceiveCallback, null);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -129,9 +141,9 @@ namespace UrbanFrontline.Server.Core.Networks
                     Disconnect();
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -171,12 +183,21 @@ namespace UrbanFrontline.Server.Core.Networks
             }
 
             // 패킷 데이터를 OnRecvPacket에 전달
-            OnRecvPacket(packetId, new ArraySegment<byte>(buffer.Array, buffer.Offset + 4, dataSize - 4));
+            OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset + 4, dataSize - 4));
         }
 
-        protected abstract void OnConnected(EndPoint endPoint);
+        protected virtual void OnConnected(EndPoint endPoint)
+        {
+            onConnected?.Invoke(endPoint);
+            Logger.LogNotice($"새로운 클라이언트와 연결되었습니다. {endPoint}");
+        }
+
         protected abstract void OnSend(int numBytes);
-        protected abstract void OnRecvPacket(ushort packetId, ArraySegment<byte> payload);
-        protected abstract void OnDisconnected();
+        protected abstract void OnReceivePacket(ArraySegment<byte> payload);
+        protected virtual void OnDisconnected()
+        {
+            onDisconnected?.Invoke(m_socket.RemoteEndPoint);
+            Logger.LogNotice($"새로운 클라이언트가 연결 해제되었습니다. {m_socket.RemoteEndPoint}");
+        }
     }
 }

@@ -4,22 +4,32 @@
 // Author: ※ 작성자 이름을 반드시 기입해주세요.
 // ========================================
 
+using System.Net.Sockets;
+using System.Net;
 using UnityEngine;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
     public class Connector : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        private Socket _clientSocket;
+
+        public void Connect(string ipAddress, int port)
         {
+            _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _clientSocket.Blocking = false;
 
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            try
+            {
+                _clientSocket.Connect(new IPEndPoint(IPAddress.Parse(ipAddress), port));
+            }
+            catch (SocketException exception)
+            {
+                if (exception.SocketErrorCode == SocketError.WouldBlock)
+                {
+                    // TODO: 비동기 연결 처리
+                }
+            }
         }
     }
 }

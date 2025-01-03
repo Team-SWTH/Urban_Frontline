@@ -1,0 +1,71 @@
+// ========================================
+// File: Packets.proto
+// Created: 2025-01-04 02:33:51
+// Author: LHBM04
+// ========================================
+
+// 테스트용 .proto 파일.
+// 일단은 채팅만 테스트 해보자.
+
+syntax = "proto3";
+package Protocol;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "UrbanFrontline.Server.Core.Packets";
+
+message PlayerInfo {
+	string id = 1;
+	string name = 2;
+}
+
+/// <summary>
+/// 플레이어 입장 패킷 (클라이언트 -> 서버)
+/// </summary>
+message C_PlayerJoin {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp joinTime = 2;
+}
+
+/// <summary>
+/// 플레이어 입장 패킷 (서버 -> 클라이언트)
+/// </summary>
+message S_PlayerJoin {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp joinTime = 2;
+}
+
+/// <summary>
+/// 플레이어 퇴장 패킷. (클라이언트 -> 서버)
+/// </summary>
+message C_PlayerLeave {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp leaveTime = 2;
+}
+
+/// <summary>
+/// 플레이어 퇴장 패킷. (서버 -> 클라이언트)
+/// </summary>
+message S_PlayerLeave {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp leaveTime = 2;
+}
+
+/// <summary>
+/// 플레이어 채팅 패킷. (클라이언트 -> 서버)
+/// </summary>
+message C_PlayerChat {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp chatTime = 2;
+	string chat = 3;
+}
+
+/// <summary>
+/// 플레이어 채팅 패킷. (서버 -> 클라이언트)
+/// </summary>
+message S_PlayerChat {
+	PlayerInfo info = 1;
+	google.protobuf.Timestamp chatTime = 2;
+	string chat = 3;
+}

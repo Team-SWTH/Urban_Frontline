@@ -21,7 +21,7 @@ namespace UrbanFrontline.Server.Core.Networks
         }
 
         // 패킷 수신 시 호출
-        protected override void OnRecvPacket(ushort packetId, ArraySegment<byte> payload)
+        protected override void OnReceivePacket(ArraySegment<byte> payload)
         {
             // PacketManager.Instance.HandlePacket(this, packetId, payload);
         }

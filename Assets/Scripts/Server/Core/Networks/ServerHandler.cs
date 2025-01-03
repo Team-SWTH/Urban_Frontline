@@ -53,9 +53,9 @@ namespace UrbanFrontline.Server.Core.Networks
 
                 m_routineTask = Task.Factory.StartNew(() => Routine(m_cts.Token), m_cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Utilities.Logger.LogException($"서버를 열 수 없었습니다!", ex);
+                Utilities.Logger.LogException(exception);
                 StopServer();
             }
         }
@@ -82,9 +82,9 @@ namespace UrbanFrontline.Server.Core.Networks
                 Task.Delay(1000).Wait();
                 Application.Quit();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Utilities.Logger.LogException($"서버를 닫을 수 없습니다!", ex);
+                Utilities.Logger.LogException(exception);
             }
         }
 

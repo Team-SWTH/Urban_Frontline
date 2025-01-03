@@ -117,12 +117,12 @@ namespace UrbanFrontline.Server.Core.Utilities
         /// </summary>
         /// <param name="message">출력할 에러 로그.</param>
         /// <param name="exception">throw할 예외.</param>
-        public static void LogException(string message, Exception exception)
+        public static void LogException(Exception exception)
         {
 #if UNITY_EDITOR
             Debug.LogException(exception);
 #else
-            Log(ELevel.Assertion, $"{message} =>> {exception.Message}");
+            Log(ELevel.Assertion, $"예외 \'{typeof(exception)}\'가 발생하였습니다. =>> {exception.Message}");
             throw exception;
 #endif
         }
