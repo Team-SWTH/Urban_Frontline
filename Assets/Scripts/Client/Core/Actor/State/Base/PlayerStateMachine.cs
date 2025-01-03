@@ -42,7 +42,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Base
         /// </summary>
         public void Update()
         {
-            CurrentState.Update();
+            CurrentState?.Update();
         }
     }
 }

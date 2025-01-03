@@ -41,6 +41,7 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
 
             inputProvider.JumpInput.Where(_ => IsEnable == true)
                                    .Where(_ => Player.CharacterMovement.IsGrounded() == true)
+                                   .Where(_ => Player.PlayerStamina.Jumpable == true)
                                    .Where(jump => jump == true)
                                    .Subscribe(_ =>
                                    {
@@ -64,6 +65,16 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
+        }
+
+        /// <summary>
+        /// Idle 상태에서 매 프레임 호출되는 함수
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            Player.PlayerStamina.RegenStamina(Player.PlayerStamina.IdleStaminaRegenPerSecond * Time.deltaTime);
         }
     }
 }

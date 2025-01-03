@@ -7,6 +7,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using UniRx;
+using UnityEngine;
 using UrbanFrontline.Client.Core.Actor.State.Base;
 using UrbanFrontline.Client.Core.Input;
 
@@ -48,6 +49,8 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
 
             Player.CharacterMovement.Jump();
 
+            Player.PlayerStamina.DrainStamina(Player.PlayerStamina.JumpStaminaDrainPerFrame);
+
             WaitOnGround().Forget();
         }
 
@@ -57,6 +60,16 @@ namespace UrbanFrontline.Client.Core.Actor.State.Move
         public override void Exit()
         {
             base.Exit();
+        }
+
+        /// <summary>
+        /// Jump 상태에서 매 프레임 호출되는 함수
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            Player.PlayerStamina.RegenStamina(Player.PlayerStamina.WalkStaminaRegenPerSecond * Time.deltaTime);
         }
 
         public async UniTaskVoid WaitOnGround()
