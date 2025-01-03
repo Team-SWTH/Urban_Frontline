@@ -11,7 +11,7 @@ using UnityEngine;
 namespace UrbanFrontline.Server.Core.Networks
 {
     [Serializable]
-    public struct ServerBase
+    public struct ServerOption
     {
         /// <summary>
         /// 

@@ -11,7 +11,6 @@ namespace UrbanFrontline.Server.Core.Networks
     /// <summary>
     /// 버퍼의 기본 필드 및 동작을 선언 및 정의합니다.
     /// </summary>
-    [Serializable]
     public abstract class BufferBase
     {
         /// <summary>
