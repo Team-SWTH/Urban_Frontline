@@ -4,9 +4,9 @@
 // Author: LHBM04
 // ========================================
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace UrbanFrontline.Common
 {
@@ -20,10 +20,10 @@ namespace UrbanFrontline.Common
         /// </summary>
         public static JsonData FromJson(string json)
         {
-            Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            JsonData jsonData = new JsonData();
+            Dictionary<string, JsonElement> data        = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+            JsonData                        jsonData    = new JsonData();
 
-            foreach (KeyValuePair<string, object> entry in data)
+            foreach (KeyValuePair<string, JsonElement> entry in data)
             {
                 jsonData.SetValue(entry.Key, entry.Value);
             }
@@ -36,8 +36,8 @@ namespace UrbanFrontline.Common
         /// </summary>
         public static string ToJson(JsonData jsonData)
         {
-            Dictionary<string, object> data = jsonData.GetAllData();
-            return JsonConvert.SerializeObject(data, Formatting.Indented);
+            Dictionary<string, JsonElement> data = jsonData.GetAllData();
+            return JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
