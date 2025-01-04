@@ -42,7 +42,7 @@ namespace UrbanFrontline.Server.Core.Utilities
         public static extern bool SetConsoleOutputCP(uint wCodePageID);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetConsoleCP(uint wCodePageID);\
+        public static extern bool SetConsoleCP(uint wCodePageID);
         #endregion
 
         static Logger()
@@ -122,8 +122,8 @@ namespace UrbanFrontline.Server.Core.Utilities
 #if UNITY_EDITOR
             Debug.LogException(exception);
 #else
-            Log(ELevel.Assertion, $"예외 \'{typeof(exception)}\'가 발생하였습니다. =>> {exception.Message}");
-            throw exception;
+           // Log(ELevel.Assertion, $"예외 \'{typeof(exception)}\'가 발생하였습니다. =>> {exception.Message}");
+           // throw exception;
 #endif
         }
 

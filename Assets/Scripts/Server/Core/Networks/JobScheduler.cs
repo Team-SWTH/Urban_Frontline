@@ -18,14 +18,16 @@ namespace UrbanFrontline.Server.Core.Networks
         /// <summary>
         /// 캡슐화된 작업을 저장하는 Thread-Safe한 Queue.
         /// </summary>
-        public ConcurrentQueue<Action> Schedul
-        {
-            get;
-        } = new ConcurrentQueue<Action>();
+        private readonly ConcurrentQueue<Action> m_schedule = new ConcurrentQueue<Action>();
 
-        private void Update()
+        public void Add(Action action)
         {
-            while (Schedul.TryDequeue(out Action action))
+            m_schedule.Enqueue(action);
+        }
+
+        public void Flush()
+        {
+            while (m_schedule.TryDequeue(out Action action))
             {
                 action.Invoke();
             }

@@ -1,12 +1,15 @@
 // ========================================
-// File: ConnectEvent.cs
-// Created: 2025-01-01 02:40:54
+// File: RoomBase.cs
+// Created: 2025-01-04 09:30:44
 // Author: LHBM04
 // ========================================
 
-using System.Net;
+using UnityEngine;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
-    public delegate void ConnectEvent(EndPoint endPoint);
+    public class RoomBase : MonoBehaviour
+    {
+        
+    }
 }

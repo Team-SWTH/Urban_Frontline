@@ -6,7 +6,7 @@
 
 using System;
 
-namespace UrbanFrontline.Server.Core.Networks
+namespace UrbanFrontline.Server.Core.Utilities
 {
     /// <summary>
     /// 데이터(패킷)를 수신받을 때 사용되는 버퍼.

@@ -6,7 +6,7 @@
 
 using System;
 
-namespace UrbanFrontline.Server.Core.Networks
+namespace UrbanFrontline.Server.Core.Utilities
 {
     /// <summary>
     /// 버퍼의 기본 필드 및 동작을 선언 및 정의합니다.

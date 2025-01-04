@@ -38,6 +38,11 @@ namespace UrbanFrontline.Server.Core.Packets
             get;
             set;
         }
+
+        public override void Handle()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -68,6 +73,11 @@ namespace UrbanFrontline.Server.Core.Packets
         {
             get;
             set;
+        }
+
+        public override void Handle()
+        {
+            throw new NotImplementedException();
         }
     }
 }

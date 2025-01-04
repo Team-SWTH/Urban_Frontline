@@ -111,5 +111,10 @@ namespace UrbanFrontline.Server.Core.Packets
         { 
             get; 
         }
+
+        /// <summary>
+        /// 해당 패킷에 대한 처리를 진행합니다.
+        /// </summary>
+        public abstract void Handle();
     }
 }
