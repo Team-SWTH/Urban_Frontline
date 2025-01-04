@@ -5,47 +5,35 @@
 // ========================================
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using UrbanFrontline.Server.Core.Packets;
+using UrbanFrontline.Server.Core.Utilities;
 
 namespace UrbanFrontline.Server.Core.Networks
 {
     /// <summary>
-    /// 세션.
+    /// 세션의 기본 동작을 구현합니다.
     /// </summary>
     public abstract class SessionBase
     {
+        #region Fields
         private Socket m_socket;
         private int m_isConnected;
         private object m_lock = new object();
+        #endregion
 
-        /// <summary>
-        /// 수신용 버퍼.
-        /// </summary>
-        protected ReceiveBuffer receiveBuffer
-        {
-            get;
-            private set;
-        } = new ReceiveBuffer();
+        #region Buffers
+        private ReceiveBuffer receiveBuffer = new ReceiveBuffer();
+        private SendBuffer sendBuffer = new SendBuffer();
+        #endregion
 
-        /// <summary>
-        /// 송신용 버퍼.
-        /// </summary>
-        protected SendBuffer sendBuffer
-        {
-            get;
-            private set;
-        } = new SendBuffer();
-
-
-
+        #region Connection Management
         public void Connect(Socket connectedSocket)
         {
             m_socket = connectedSocket;
             OnConnected(connectedSocket.RemoteEndPoint);
-
             StartReceive();
         }
 
@@ -55,10 +43,13 @@ namespace UrbanFrontline.Server.Core.Networks
                 return;
 
             OnDisconnected();
+
             m_socket.Shutdown(SocketShutdown.Both);
             m_socket.Close();
         }
+        #endregion
 
+        #region Data Transmission
         public void Send(byte[] data)
         {
             lock (m_lock)
@@ -78,9 +69,9 @@ namespace UrbanFrontline.Server.Core.Networks
                 ArraySegment<byte> segment = sendBuffer.Open(sendBuffer.Clearance);
                 m_socket.BeginSend(segment.Array, segment.Offset, segment.Count, SocketFlags.None, SendCallback, null);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -90,25 +81,27 @@ namespace UrbanFrontline.Server.Core.Networks
             try
             {
                 int bytesSent = m_socket.EndSend(ar);
-                OnSend(bytesSent);
+                OnSendPacket(bytesSent);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
+        #endregion
 
+        #region Data Reception
         private void StartReceive()
         {
-            var segment = receiveBuffer.WriteSegment;
+            ArraySegment<byte> segment = receiveBuffer.WriteSegment;
             try
             {
                 m_socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, ReceiveCallback, null);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -129,9 +122,9 @@ namespace UrbanFrontline.Server.Core.Networks
                     Disconnect();
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Logger.LogException(exception);
                 Disconnect();
             }
         }
@@ -160,23 +153,43 @@ namespace UrbanFrontline.Server.Core.Networks
 
         private void ProcessPacket(ArraySegment<byte> buffer)
         {
-            // 데이터 크기와 패킷 ID 읽기
-            ushort dataSize = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
-            ushort packetId = BitConverter.ToUInt16(buffer.Array, buffer.Offset + 2);
-
-            // 데이터 크기가 부족하면 처리하지 않음
+            // 1, 데이터 무결성 검사.
+            int dataSize = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
             if (buffer.Count < dataSize)
             {
                 return;
             }
 
-            // 패킷 데이터를 OnRecvPacket에 전달
-            OnRecvPacket(packetId, new ArraySegment<byte>(buffer.Array, buffer.Offset + 4, dataSize - 4));
-        }
+            // 2. 데이터 역직렬화.
+            PacketBase.EType packetType = (PacketBase.EType)BitConverter.ToUInt16(buffer.Array, buffer.Offset + 2);
+            PacketBase packet = null;
+            switch (packetType)
+            {
+                case PacketBase.EType.C_Join:
+                    packet = PacketHandler.Deserialize<C_Join>(buffer.Array);
+                    break;
+                case PacketBase.EType.S_Join:
+                    packet = PacketHandler.Deserialize<S_Join>(buffer.Array);
+                    break;
+                case PacketBase.EType.C_Left:
+                    packet = PacketHandler.Deserialize<C_Left>(buffer.Array);
+                    break;
+                // 다른 타입들 처리...
+                default:
+                    Logger.LogWarning("Unknown packet type: " + packetType);
+                    return;
+            }
 
+            // 3. 패킷이 정상적으로 역직렬화되었으면 처리
+            OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset + 4, dataSize - 4));
+        }
+        #endregion
+
+        #region Abstract Methods
         protected abstract void OnConnected(EndPoint endPoint);
-        protected abstract void OnSend(int numBytes);
-        protected abstract void OnRecvPacket(ushort packetId, ArraySegment<byte> payload);
         protected abstract void OnDisconnected();
+        protected abstract void OnSendPacket(int numBytes);
+        protected abstract void OnReceivePacket(ArraySegment<byte> payload);
+        #endregion
     }
 }
